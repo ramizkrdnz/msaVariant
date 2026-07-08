@@ -1,0 +1,40 @@
+Package: msaVariant
+Type: Package
+Title: Clinical-Genetics Multiple Sequence Alignment Visualisation with
+        Variant Overlay
+Version: 0.2.0
+Authors@R: c(
+    person("Your", "Name", email = "you@example.org",
+           role = c("aut", "cre")),
+    person("Guangchuang", "Yu", role = "ctb",
+           comment = "ggmsa, on which this package builds"))
+Description: Extends 'ggmsa' with annotation layers for clinical and
+    population genetics. Provides ggplot2 'geom_*' layers that paint
+    user-supplied variants and per-residue annotation tracks
+    directly onto a multiple sequence alignment, together with
+    per-column conservation scoring and protein domain tracks.
+    Designed for variant-of-uncertain-significance interpretation,
+    rare-disease gene discovery, and expert-panel curation
+    workflows. Users supply their own MSA (FASTA) and variant table;
+    the package computes conservation from the alignment and
+    overlays whatever annotation data the user brings via a generic
+    track layer.
+License: Artistic-2.0
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: ggplot2 (>= 3.4.0), Biostrings, rlang, scales, patchwork,
+        cowplot
+Suggests: ggmsa (>= 1.6.0), VariantAnnotation, httr, jsonlite, knitr,
+        rmarkdown, testthat (>= 3.0.0), ggrepel, digest, withr
+biocViews: Visualization, MultipleSequenceAlignment, Genetics,
+        VariantAnnotation, SequenceMatching
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+URL: https://github.com/yourname/ggmsaVariant
+BugReports: https://github.com/yourname/ggmsaVariant/issues
+NeedsCompilation: no
+Packaged: 2026-05-20 08:12:24 UTC; root
+Author: Your Name [aut, cre],
+  Guangchuang Yu [ctb] (ggmsa, on which this package builds)
+Maintainer: Your Name <you@example.org>
+Config/roxygen2/version: 8.0.0

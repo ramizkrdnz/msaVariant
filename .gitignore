@@ -1,0 +1,23 @@
+# R build artifacts
+*.tar.gz
+*.zip
+*.Rcheck/
+.Rproj.user/
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# pkgdown / generated docs
+docs/
+
+# generated figure outputs (source figures live in vignettes/inst)
+*.png
+*.pdf
+
+# OS cruft
+.DS_Store
+
+# NOTE: intentionally NOT ignored (required):
+#   tests/testthat/fixtures/   -> *.rds test fixtures needed by the test suite
+#   data-raw/*.R               -> bundle build scripts (kept as source)
