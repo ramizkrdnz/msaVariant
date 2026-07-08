@@ -57,6 +57,9 @@ rsconnect/
 # generated figure outputs (source figures live in vignettes/inst)
 *.png
 *.pdf
+# ...but README / pkgdown documentation figures must be tracked
+!man/figures/
+!man/figures/**
 
 # OS cruft
 .DS_Store
