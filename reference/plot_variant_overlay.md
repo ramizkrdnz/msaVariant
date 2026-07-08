@@ -148,16 +148,27 @@ A \`patchwork\` plot object. Save with \`ggplot2::ggsave()\`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-import_local_bundle("TP53.rds")
-p <- plot_variant_overlay(
-  gene          = "TP53",
-  aligned_fasta = "tp53_aligned.fasta",
-  variant_pos   = 175,
-  variant_label = "p.R175H",
-  window        = c(160, 200)
+## Runnable with the synthetic DEMO1 example bundle shipped in the
+## package (fabricated data; not real predictions). Use a temporary
+## cache so the example does not touch your real cache directory.
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
 )
-ggplot2::ggsave("tp53_R175H.png", p,
-                width = 15, height = 11, dpi = 400, bg = "white")
+#> Cache directory does not exist yet (no annotations have been downloaded).
+#> Imported DEMO1 bundle -> /tmp/RtmpB0BDjI/msaVariant_cache_1a583882f1df/0.1.0/DEMO1.rds
+p <- plot_variant_overlay(
+  gene          = "DEMO1",
+  aligned_fasta = system.file("extdata", "demo_aligned.fasta",
+                              package = "msaVariant"),
+  variant_pos   = 21,
+  variant_label = "p.R21H"
+)
+
+if (FALSE) { # \dontrun{
+## Save a publication-resolution figure
+ggplot2::ggsave("demo1_R21H.png", p,
+                width = 15, height = 9, dpi = 300, bg = "white")
 } # }
 ```

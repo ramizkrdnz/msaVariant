@@ -33,9 +33,11 @@ demand and cache results locally.
 
 Useful links:
 
-- <https://github.com/yourname/ggmsaVariant>
+- <https://github.com/ramizkrdnz/msaVariant>
 
-- Report bugs at <https://github.com/yourname/ggmsaVariant/issues>
+- <https://ramizkrdnz.github.io/msaVariant/>
+
+- Report bugs at <https://github.com/ramizkrdnz/msaVariant/issues>
 
 ## Author
 

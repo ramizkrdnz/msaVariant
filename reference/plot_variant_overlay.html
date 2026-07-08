@@ -197,17 +197,28 @@ that were actually triggered are drawn as chips.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span><span class="st">"TP53.rds"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">plot_variant_overlay</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  gene          <span class="op">=</span> <span class="st">"TP53"</span>,</span></span>
-<span class="r-in"><span>  aligned_fasta <span class="op">=</span> <span class="st">"tp53_aligned.fasta"</span>,</span></span>
-<span class="r-in"><span>  variant_pos   <span class="op">=</span> <span class="fl">175</span>,</span></span>
-<span class="r-in"><span>  variant_label <span class="op">=</span> <span class="st">"p.R175H"</span>,</span></span>
-<span class="r-in"><span>  window        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">160</span>, <span class="fl">200</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Runnable with the synthetic DEMO1 example bundle shipped in the</span></span></span>
+<span class="r-in"><span><span class="co">## package (fabricated data; not real predictions). Use a temporary</span></span></span>
+<span class="r-in"><span><span class="co">## cache so the example does not touch your real cache directory.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MSAVARIANT_CACHE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"msaVariant_cache_"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  gene <span class="op">=</span> <span class="st">"DEMO1"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"tp53_R175H.png"</span>, <span class="va">p</span>,</span></span>
-<span class="r-in"><span>                width <span class="op">=</span> <span class="fl">15</span>, height <span class="op">=</span> <span class="fl">11</span>, dpi <span class="op">=</span> <span class="fl">400</span>, bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cache directory does not exist yet (no annotations have been downloaded).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Imported DEMO1 bundle -&gt; /tmp/RtmpB0BDjI/msaVariant_cache_1a583882f1df/0.1.0/DEMO1.rds</span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">plot_variant_overlay</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  gene          <span class="op">=</span> <span class="st">"DEMO1"</span>,</span></span>
+<span class="r-in"><span>  aligned_fasta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"demo_aligned.fasta"</span>,</span></span>
+<span class="r-in"><span>                              package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  variant_pos   <span class="op">=</span> <span class="fl">21</span>,</span></span>
+<span class="r-in"><span>  variant_label <span class="op">=</span> <span class="st">"p.R21H"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co">## Save a publication-resolution figure</span></span></span>
+<span class="r-in"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"demo1_R21H.png"</span>, <span class="va">p</span>,</span></span>
+<span class="r-in"><span>                width <span class="op">=</span> <span class="fl">15</span>, height <span class="op">=</span> <span class="fl">9</span>, dpi <span class="op">=</span> <span class="fl">300</span>, bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

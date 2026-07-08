@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   introduction: introduction.html
   tutorial_full_workflow: tutorial_full_workflow.html
-last_built: 2026-07-08T14:02Z
+last_built: 2026-07-08T14:16Z
 urls:
   reference: https://ramizkrdnz.github.io/msaVariant/reference
   article: https://ramizkrdnz.github.io/msaVariant/articles

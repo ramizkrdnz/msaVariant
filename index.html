@@ -70,22 +70,29 @@
 <div class="section level2">
 <h2 id="bulb-quick-example">💡 Quick Example<a class="anchor" aria-label="anchor" href="#bulb-quick-example"></a>
 </h2>
-<p>One call assembles the whole figure. The example uses a <strong>local gene bundle</strong> via <code><a href="reference/import_local_bundle.html">import_local_bundle()</a></code>, so it runs <strong>without any Zenodo download</strong> — point it at the TP53 example bundle shipped in the source repo under <code>tests/testthat/fixtures/</code>, or at any bundle you build with <code>data-raw/build_gene_files.R</code>.</p>
+<p>One call assembles the whole figure. This example runs <strong>out of the box</strong> — it uses the small <strong>synthetic <code>DEMO1</code> bundle that ships with the package</strong> (via <code><a href="reference/import_local_bundle.html">import_local_bundle()</a></code>), so no Zenodo download and no external data are needed:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ramizkrdnz/msaVariant" class="external-link">msaVariant</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 1. Load a local TP53 annotation bundle into the cache (no Zenodo needed)</span></span>
-<span><span class="fu"><a href="reference/import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span><span class="st">"tests/testthat/fixtures/TP53.rds"</span>, gene <span class="op">=</span> <span class="st">"TP53"</span><span class="op">)</span></span>
+<span><span class="co"># 1. Load the bundled synthetic DEMO1 example into the cache (no Zenodo)</span></span>
+<span><span class="fu"><a href="reference/import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span>
+<span>  gene <span class="op">=</span> <span class="st">"DEMO1"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 2. Build the figure for the classic pathogenic hotspot TP53 p.R175H</span></span>
+<span><span class="co"># 2. Build the full overlay figure for the demo variant DEMO1 p.R21H</span></span>
 <span><span class="fu"><a href="reference/plot_variant_overlay.html">plot_variant_overlay</a></span><span class="op">(</span></span>
-<span>  gene          <span class="op">=</span> <span class="st">"TP53"</span>,</span>
-<span>  aligned_fasta <span class="op">=</span> <span class="st">"tests/testthat/fixtures/tp53_aligned.fasta"</span>,</span>
-<span>  variant_pos   <span class="op">=</span> <span class="fl">175</span>,</span>
-<span>  variant_label <span class="op">=</span> <span class="st">"p.R175H"</span></span>
+<span>  gene          <span class="op">=</span> <span class="st">"DEMO1"</span>,</span>
+<span>  aligned_fasta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"demo_aligned.fasta"</span>,</span>
+<span>                              package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span>
+<span>  variant_pos   <span class="op">=</span> <span class="fl">21</span>,</span>
+<span>  variant_label <span class="op">=</span> <span class="st">"p.R21H"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-tp53-r175h.png" alt="msaVariant overlay for TP53 p.R175H: cross-species alignment, conservation, annotation tracks, and ACMG evidence codes" width="100%"></p>
-<p>For TP53 p.R175H this fires five ACMG codes — <strong>PS1, PM1, PM2, PM5, PP3</strong> — automatically, from the bundled ClinVar / AlphaMissense / REVEL / CADD tables.</p>
+<p><img src="reference/figures/README-demo1.png" alt="msaVariant overlay for the synthetic DEMO1 p.R21H example: cross-species alignment, conservation, annotation tracks, and ACMG evidence codes" width="100%"></p>
+<blockquote>
+<p><strong>⚠️ <code>DEMO1</code> is synthetic.</strong> Every number in this figure is fabricated illustrative data — <strong>not</strong> real AlphaMissense / CADD / REVEL / ClinVar / gnomAD predictions. It exists only to let the example run out-of-the-box and to show the figure layout. <code>DEMO1</code> is not a real gene.</p>
+</blockquote>
+<p>The synthetic variant <code>DEMO1 p.R21H</code> is engineered so that all five ACMG codes fire — <strong>PS1, PM1, PM2, PM5, PP3</strong> — computed automatically from the bundled tables, exactly as they would be for real data.</p>
 </div>
 <div class="section level2">
 <h2 id="books-learn-more">📚 Learn more<a class="anchor" aria-label="anchor" href="#books-learn-more"></a>
