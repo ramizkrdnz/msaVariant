@@ -1,101 +1,108 @@
 # msaVariant
 
-> Clinical-genetics multiple sequence alignment visualisation with
-> variant overlay. v0.2.0 — Kaplan Lab.
+`msaVariant` produces publication-quality figures for a **single genetic
+variant**: a cross-species protein **multiple sequence alignment** with
+per-column **conservation**, stacked **annotation tracks** (ClinVar,
+gnomAD, AlphaMissense, REVEL, CADD, protein domains), and an automatic
+**ACMG evidence-code strip** (PS1, PM1, PM2, PM5, PP3) computed straight
+from the data. It is built on top of
+[`ggmsa`](https://github.com/YuLab-SMU/ggmsa) and returns a normal
+`ggplot`/`patchwork` object, so every layer, colour, and label stays
+fully customisable for figures you can drop into a paper.
 
-`msaVariant` extends [`ggmsa`](https://github.com/YuLab-SMU/ggmsa)
-with annotation layers tailored to clinical and rare-disease
-genetics: variants, protein domains, gnomAD allele frequencies,
-ClinVar significance, AlphaMissense/REVEL/CADD pathogenicity
-scores.
+## 🔨 Installation
 
-## Installation
+Install the visual base [`ggmsa`](https://github.com/YuLab-SMU/ggmsa)
+(Bioconductor), then `msaVariant` from GitHub:
 
 ```r
-# Install ggmsa first (required for the visual base)
-if (!require("BiocManager")) install.packages("BiocManager")
+# ggmsa (required base) + Bioconductor deps
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
 BiocManager::install("ggmsa")
 
-# Then msaVariant
-# (Bioconductor route once published:)
-BiocManager::install("msaVariant")
-# (GitHub route in the meantime:)
-# devtools::install_github("KaplanLab/msaVariant")
+# msaVariant (development version)
+# install.packages("devtools")
+devtools::install_github("ramizkrdnz/msaVariant")
 ```
 
-## Quick start
+## 💡 Quick Example
+
+One call assembles the whole figure. The example uses a **local gene
+bundle** via `import_local_bundle()`, so it runs **without any Zenodo
+download** — point it at the TP53 example bundle shipped in the source
+repo under `tests/testthat/fixtures/`, or at any bundle you build with
+`data-raw/build_gene_files.R`.
 
 ```r
-library(ggmsa)
 library(msaVariant)
 
-fa <- "patl1_orthologs.fasta"  # your MSA
+# 1. Load a local TP53 annotation bundle into the cache (no Zenodo needed)
+import_local_bundle("tests/testthat/fixtures/TP53.rds", gene = "TP53")
 
-ggmsa(fa, char_width = 0.6, seq_name = TRUE) +
-  geom_variant(data.frame(pos = 518, label = "K518fs"),
-               msa = fa) +
-  geom_domain(gene = "PATL1",         msa = fa) +
-  geom_clinvar(gene = "PATL1",        msa = fa) +
-  geom_alphamissense(gene = "PATL1",  msa = fa) +
-  geom_gnomad(gene = "PATL1",         msa = fa)
+# 2. Build the figure for the classic pathogenic hotspot TP53 p.R175H
+plot_variant_overlay(
+  gene          = "TP53",
+  aligned_fasta = "tests/testthat/fixtures/tp53_aligned.fasta",
+  variant_pos   = 175,
+  variant_label = "p.R175H"
+)
 ```
 
-Five layers, one gene symbol per annotation, no manual data
-download. The package fetches per-gene data from a Zenodo deposit
-the first time you use a gene and caches it locally.
+<img src="man/figures/README-tp53-r175h.png" alt="msaVariant overlay for TP53 p.R175H: cross-species alignment, conservation, annotation tracks, and ACMG evidence codes" width="100%" />
 
-> **⚠️ Data upload pending.** The Zenodo data deposit is not yet
-> published, so remote fetches (`fetch_gene_data()` and the
-> gene-symbol annotation layers above) will currently fail. Until
-> the deposit is live you can still use every feature with your own
-> data via *Bring-your-own-data mode* (below) or by importing a
-> local bundle with `import_local_bundle()`. This note will be
-> removed once the deposit is uploaded and wired in.
+For TP53 p.R175H this fires five ACMG codes — **PS1, PM1, PM2, PM5,
+PP3** — automatically, from the bundled ClinVar / AlphaMissense / REVEL /
+CADD tables.
 
-## Data architecture
+## 📚 Learn more
 
-| Annotation       | Where it comes from                              |
-|------------------|--------------------------------------------------|
-| Conservation     | Computed from your MSA                           |
-| Domains          | Zenodo deposit (InterPro/Pfam slice)             |
-| ClinVar          | Zenodo deposit (NCBI snapshot)                   |
-| gnomAD           | Zenodo deposit (per-residue summary, v4.1)       |
-| AlphaMissense    | Zenodo deposit (per-residue mean/max scores)     |
-| REVEL            | Zenodo deposit                                   |
-| CADD             | Zenodo deposit                                   |
+Full articles are on the documentation site,
+**<https://ramizkrdnz.github.io/msaVariant/>**:
 
-The data deposit is versioned by the Kaplan Lab on Zenodo. When
-gnomAD releases a new version, we re-run our build scripts
-(`data-raw/build_zenodo_deposit.R`), upload a new deposit version,
-and release a new `msaVariant` package version that points to it.
+- [**Get Started**](https://ramizkrdnz.github.io/msaVariant/articles/introduction.html)
+  — install, load data, and build your first overlay.
+- [Full workflow tutorial](https://ramizkrdnz.github.io/msaVariant/articles/tutorial_full_workflow.html)
+  — end-to-end, from FASTA to finished figure.
+- ACMG Evidence Codes — how PS1/PM1/PM2/PM5/PP3 are computed *(in preparation)*.
+- Colour Schemes — `journal`, `colorblind` (Okabe–Ito), `grayscale`, and
+  per-element overrides *(in preparation)*.
+- Annotation Tracks — the ClinVar / gnomAD / AlphaMissense / REVEL / CADD
+  and domain geoms *(in preparation)*.
+- Toggling Layers — show/hide any track; the layout re-flows with no gaps
+  *(in preparation)*.
+- Bring Your Own Data — overlay your own annotations with `geom_track()`
+  *(in preparation)*.
 
-## Bring-your-own-data mode
+## 🧬 Bring-your-own-data mode
 
-If you have proprietary or unpublished annotation:
+No Zenodo bundle required — overlay any per-residue values you already
+have:
 
 ```r
 my_data <- data.frame(pos = 510:530, score = runif(21))
-ggmsa(fa) +
-  geom_track(my_data, msa = fa, value = "score",
-             name = "Custom track")
+ggmsa::ggmsa(fa) +
+  geom_track(my_data, msa = fa, value = "score", name = "Custom track")
 ```
 
-## Citation
+## ⚠️ Data upload pending
 
-If you use this package in published work please cite:
+The Zenodo data deposit is **not yet published**, so remote fetches
+(`fetch_gene_data()` and the gene-symbol annotation layers) will
+currently fail. Until the deposit is live, use your own data via
+*Bring-your-own-data mode* above, or load a local bundle with
+`import_local_bundle()` (as in the Quick Example). This note will be
+removed once the deposit is uploaded and wired in.
 
-* `msaVariant` (this package) — Kaplan Lab.
-* `ggmsa` — Zhou L et al. Briefings in Bioinformatics 23(4):bbac222 (2022).
-* The data sources you used — see the Zenodo deposit README for
-  individual citations.
+## 📄 License
 
-## License
+`msaVariant` is released under the **Artistic-2.0** license.
 
-Artistic-2.0. Note that data fetched via `geom_alphamissense()` is
-licensed CC-BY-NC-SA 4.0, which restricts commercial use of works
-derived from it.
+Note that data fetched via `geom_alphamissense()` is licensed
+**CC-BY-NC-SA 4.0**, which restricts commercial use of works derived
+from it. Check the license of every annotation source you display before
+reusing a figure.
 
-## For maintainers
+## 🏃 Author
 
-To rebuild the data deposit (gnomAD release, ClinVar refresh,
-etc.), read `data-raw/ZENODO_UPLOAD.md`.
+*Author and maintainer details are pending and will be added here.*

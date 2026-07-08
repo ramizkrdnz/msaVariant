@@ -66,7 +66,7 @@ build_manifest <- function(payload_dir) {
     "",
     "Per-gene annotation bundles for human protein-coding genes,",
     "consumed by the `msaVariant` R package",
-    "(https://github.com/KaplanLab/msaVariant).",
+    "(https://github.com/ramizkrdnz/msaVariant).",
     "",
     "## Format",
     "",
