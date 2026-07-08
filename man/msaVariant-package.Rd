@@ -39,8 +39,9 @@ that pull these databases on demand and cache results locally.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/yourname/ggmsaVariant}
-  \item Report bugs at \url{https://github.com/yourname/ggmsaVariant/issues}
+  \item \url{https://github.com/ramizkrdnz/msaVariant}
+  \item \url{https://ramizkrdnz.github.io/msaVariant/}
+  \item Report bugs at \url{https://github.com/ramizkrdnz/msaVariant/issues}
 }
 
 }

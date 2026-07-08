@@ -28,32 +28,40 @@ devtools::install_github("ramizkrdnz/msaVariant")
 
 ## 💡 Quick Example
 
-One call assembles the whole figure. The example uses a **local gene
-bundle** via `import_local_bundle()`, so it runs **without any Zenodo
-download** — point it at the TP53 example bundle shipped in the source
-repo under `tests/testthat/fixtures/`, or at any bundle you build with
-`data-raw/build_gene_files.R`.
+One call assembles the whole figure. This example runs **out of the
+box** — it uses the small **synthetic `DEMO1` bundle that ships with the
+package** (via `import_local_bundle()`), so no Zenodo download and no
+external data are needed:
 
 ```r
 library(msaVariant)
 
-# 1. Load a local TP53 annotation bundle into the cache (no Zenodo needed)
-import_local_bundle("tests/testthat/fixtures/TP53.rds", gene = "TP53")
+# 1. Load the bundled synthetic DEMO1 example into the cache (no Zenodo)
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
+)
 
-# 2. Build the figure for the classic pathogenic hotspot TP53 p.R175H
+# 2. Build the full overlay figure for the demo variant DEMO1 p.R21H
 plot_variant_overlay(
-  gene          = "TP53",
-  aligned_fasta = "tests/testthat/fixtures/tp53_aligned.fasta",
-  variant_pos   = 175,
-  variant_label = "p.R175H"
+  gene          = "DEMO1",
+  aligned_fasta = system.file("extdata", "demo_aligned.fasta",
+                              package = "msaVariant"),
+  variant_pos   = 21,
+  variant_label = "p.R21H"
 )
 ```
 
-<img src="man/figures/README-tp53-r175h.png" alt="msaVariant overlay for TP53 p.R175H: cross-species alignment, conservation, annotation tracks, and ACMG evidence codes" width="100%" />
+<img src="man/figures/README-demo1.png" alt="msaVariant overlay for the synthetic DEMO1 p.R21H example: cross-species alignment, conservation, annotation tracks, and ACMG evidence codes" width="100%" />
 
-For TP53 p.R175H this fires five ACMG codes — **PS1, PM1, PM2, PM5,
-PP3** — automatically, from the bundled ClinVar / AlphaMissense / REVEL /
-CADD tables.
+> **⚠️ `DEMO1` is synthetic.** Every number in this figure is fabricated
+> illustrative data — **not** real AlphaMissense / CADD / REVEL / ClinVar /
+> gnomAD predictions. It exists only to let the example run out-of-the-box
+> and to show the figure layout. `DEMO1` is not a real gene.
+
+The synthetic variant `DEMO1 p.R21H` is engineered so that all five ACMG
+codes fire — **PS1, PM1, PM2, PM5, PP3** — computed automatically from the
+bundled tables, exactly as they would be for real data.
 
 ## 📚 Learn more
 

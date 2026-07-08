@@ -112,17 +112,26 @@ The gene's annotation data is read from the package cache via
 aligned FASTA, and the variant position.
 }
 \examples{
-\dontrun{
-import_local_bundle("TP53.rds")
-p <- plot_variant_overlay(
-  gene          = "TP53",
-  aligned_fasta = "tp53_aligned.fasta",
-  variant_pos   = 175,
-  variant_label = "p.R175H",
-  window        = c(160, 200)
+## Runnable with the synthetic DEMO1 example bundle shipped in the
+## package (fabricated data; not real predictions). Use a temporary
+## cache so the example does not touch your real cache directory.
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
 )
-ggplot2::ggsave("tp53_R175H.png", p,
-                width = 15, height = 11, dpi = 400, bg = "white")
+p <- plot_variant_overlay(
+  gene          = "DEMO1",
+  aligned_fasta = system.file("extdata", "demo_aligned.fasta",
+                              package = "msaVariant"),
+  variant_pos   = 21,
+  variant_label = "p.R21H"
+)
+
+\dontrun{
+## Save a publication-resolution figure
+ggplot2::ggsave("demo1_R21H.png", p,
+                width = 15, height = 9, dpi = 300, bg = "white")
 }
 
 }
