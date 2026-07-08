@@ -1,0 +1,29 @@
+# Build a residue -\> MSA column lookup
+
+For one row of a multiple sequence alignment (the "reference" sequence),
+build a map from ungapped residue position (1, 2, 3, ...) to alignment
+column.
+
+## Usage
+
+``` r
+build_msa_coord_map(msa, ref_name = NULL)
+```
+
+## Arguments
+
+- msa:
+
+  An object understood by ggmsa: an AAMultipleAlignment,
+  DNAMultipleAlignment, AAStringSet, DNAStringSet, character vector of
+  equal-length sequences, or a path to a FASTA file.
+
+- ref_name:
+
+  Name of the reference sequence in the MSA. The default \`NULL\` uses
+  the first sequence.
+
+## Value
+
+A data.frame with columns \`residue_pos\`, \`aa\`, \`msa_col\`. Gap
+columns in the reference are skipped.
