@@ -52,117 +52,81 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="msavariant">msaVariant<a class="anchor" aria-label="anchor" href="#msavariant"></a>
 </h1></div>
-<blockquote>
-<p>Clinical-genetics multiple sequence alignment visualisation with variant overlay. v0.2.0 — Kaplan Lab.</p>
-</blockquote>
-<p><code>msaVariant</code> extends <a href="https://github.com/YuLab-SMU/ggmsa" class="external-link"><code>ggmsa</code></a> with annotation layers tailored to clinical and rare-disease genetics: variants, protein domains, gnomAD allele frequencies, ClinVar significance, AlphaMissense/REVEL/CADD pathogenicity scores.</p>
+<p><code>msaVariant</code> produces publication-quality figures for a <strong>single genetic variant</strong>: a cross-species protein <strong>multiple sequence alignment</strong> with per-column <strong>conservation</strong>, stacked <strong>annotation tracks</strong> (ClinVar, gnomAD, AlphaMissense, REVEL, CADD, protein domains), and an automatic <strong>ACMG evidence-code strip</strong> (PS1, PM1, PM2, PM5, PP3) computed straight from the data. It is built on top of <a href="https://github.com/YuLab-SMU/ggmsa" class="external-link"><code>ggmsa</code></a> and returns a normal <code>ggplot</code>/<code>patchwork</code> object, so every layer, colour, and label stays fully customisable for figures you can drop into a paper.</p>
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="hammer-installation">🔨 Installation<a class="anchor" aria-label="anchor" href="#hammer-installation"></a>
 </h2>
+<p>Install the visual base <a href="https://github.com/YuLab-SMU/ggmsa" class="external-link"><code>ggmsa</code></a> (Bioconductor), then <code>msaVariant</code> from GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Install ggmsa first (required for the visual base)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://bioconductor.github.io/BiocManager/" class="external-link">"BiocManager"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># ggmsa (required base) + Bioconductor deps</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"ggmsa"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Then msaVariant</span></span>
-<span><span class="co"># (Bioconductor route once published:)</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"msaVariant"</span><span class="op">)</span></span>
-<span><span class="co"># (GitHub route in the meantime:)</span></span>
-<span><span class="co"># devtools::install_github("KaplanLab/msaVariant")</span></span></code></pre></div>
+<span><span class="co"># msaVariant (development version)</span></span>
+<span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ramizkrdnz/msaVariant"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+<h2 id="bulb-quick-example">💡 Quick Example<a class="anchor" aria-label="anchor" href="#bulb-quick-example"></a>
 </h2>
+<p>One call assembles the whole figure. The example uses a <strong>local gene bundle</strong> via <code><a href="reference/import_local_bundle.html">import_local_bundle()</a></code>, so it runs <strong>without any Zenodo download</strong> — point it at the TP53 example bundle shipped in the source repo under <code>tests/testthat/fixtures/</code>, or at any bundle you build with <code>data-raw/build_gene_files.R</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi.org/10.1093/bib/bbac222(paper)" class="external-link">ggmsa</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ramizkrdnz/msaVariant" class="external-link">msaVariant</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ramizkrdnz/msaVariant" class="external-link">msaVariant</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fa</span> <span class="op">&lt;-</span> <span class="st">"patl1_orthologs.fasta"</span>  <span class="co"># your MSA</span></span>
+<span><span class="co"># 1. Load a local TP53 annotation bundle into the cache (no Zenodo needed)</span></span>
+<span><span class="fu"><a href="reference/import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span><span class="st">"tests/testthat/fixtures/TP53.rds"</span>, gene <span class="op">=</span> <span class="st">"TP53"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ggmsa/man/ggmsa.html" class="external-link">ggmsa</a></span><span class="op">(</span><span class="va">fa</span>, char_width <span class="op">=</span> <span class="fl">0.6</span>, seq_name <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_variant.html">geom_variant</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="fl">518</span>, label <span class="op">=</span> <span class="st">"K518fs"</span><span class="op">)</span>,</span>
-<span>               msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_domain.html">geom_domain</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,         msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_clinvar.html">geom_clinvar</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,        msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_alphamissense.html">geom_alphamissense</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,  msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_gnomad.html">geom_gnomad</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,         msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span></span></code></pre></div>
-<p>Five layers, one gene symbol per annotation, no manual data download. The package fetches per-gene data from a Zenodo deposit the first time you use a gene and caches it locally.</p>
-<blockquote>
-<p><strong>⚠️ Data upload pending.</strong> The Zenodo data deposit is not yet published, so remote fetches (<code><a href="reference/fetch_gene_data.html">fetch_gene_data()</a></code> and the gene-symbol annotation layers above) will currently fail. Until the deposit is live you can still use every feature with your own data via <em>Bring-your-own-data mode</em> (below) or by importing a local bundle with <code><a href="reference/import_local_bundle.html">import_local_bundle()</a></code>. This note will be removed once the deposit is uploaded and wired in.</p>
-</blockquote>
+<span><span class="co"># 2. Build the figure for the classic pathogenic hotspot TP53 p.R175H</span></span>
+<span><span class="fu"><a href="reference/plot_variant_overlay.html">plot_variant_overlay</a></span><span class="op">(</span></span>
+<span>  gene          <span class="op">=</span> <span class="st">"TP53"</span>,</span>
+<span>  aligned_fasta <span class="op">=</span> <span class="st">"tests/testthat/fixtures/tp53_aligned.fasta"</span>,</span>
+<span>  variant_pos   <span class="op">=</span> <span class="fl">175</span>,</span>
+<span>  variant_label <span class="op">=</span> <span class="st">"p.R175H"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-tp53-r175h.png" alt="msaVariant overlay for TP53 p.R175H: cross-species alignment, conservation, annotation tracks, and ACMG evidence codes" width="100%"></p>
+<p>For TP53 p.R175H this fires five ACMG codes — <strong>PS1, PM1, PM2, PM5, PP3</strong> — automatically, from the bundled ClinVar / AlphaMissense / REVEL / CADD tables.</p>
 </div>
 <div class="section level2">
-<h2 id="data-architecture">Data architecture<a class="anchor" aria-label="anchor" href="#data-architecture"></a>
+<h2 id="books-learn-more">📚 Learn more<a class="anchor" aria-label="anchor" href="#books-learn-more"></a>
 </h2>
-<table class="table">
-<thead><tr>
-<th>Annotation</th>
-<th>Where it comes from</th>
-</tr></thead>
-<tbody>
-<tr>
-<td>Conservation</td>
-<td>Computed from your MSA</td>
-</tr>
-<tr>
-<td>Domains</td>
-<td>Zenodo deposit (InterPro/Pfam slice)</td>
-</tr>
-<tr>
-<td>ClinVar</td>
-<td>Zenodo deposit (NCBI snapshot)</td>
-</tr>
-<tr>
-<td>gnomAD</td>
-<td>Zenodo deposit (per-residue summary, v4.1)</td>
-</tr>
-<tr>
-<td>AlphaMissense</td>
-<td>Zenodo deposit (per-residue mean/max scores)</td>
-</tr>
-<tr>
-<td>REVEL</td>
-<td>Zenodo deposit</td>
-</tr>
-<tr>
-<td>CADD</td>
-<td>Zenodo deposit</td>
-</tr>
-</tbody>
-</table>
-<p>The data deposit is versioned by the Kaplan Lab on Zenodo. When gnomAD releases a new version, we re-run our build scripts (<code>data-raw/build_zenodo_deposit.R</code>), upload a new deposit version, and release a new <code>msaVariant</code> package version that points to it.</p>
-</div>
-<div class="section level2">
-<h2 id="bring-your-own-data-mode">Bring-your-own-data mode<a class="anchor" aria-label="anchor" href="#bring-your-own-data-mode"></a>
-</h2>
-<p>If you have proprietary or unpublished annotation:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="fl">510</span><span class="op">:</span><span class="fl">530</span>, score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">21</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ggmsa/man/ggmsa.html" class="external-link">ggmsa</a></span><span class="op">(</span><span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="reference/geom_track.html">geom_track</a></span><span class="op">(</span><span class="va">my_data</span>, msa <span class="op">=</span> <span class="va">fa</span>, value <span class="op">=</span> <span class="st">"score"</span>,</span>
-<span>             name <span class="op">=</span> <span class="st">"Custom track"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
-</h2>
-<p>If you use this package in published work please cite:</p>
+<p>Full articles are on the documentation site, <strong><a href="https://ramizkrdnz.github.io/msaVariant/" class="uri">https://ramizkrdnz.github.io/msaVariant/</a></strong>:</p>
 <ul>
 <li>
-<code>msaVariant</code> (this package) — Kaplan Lab.</li>
+<a href="https://ramizkrdnz.github.io/msaVariant/articles/introduction.html"><strong>Get Started</strong></a> — install, load data, and build your first overlay.</li>
 <li>
-<code>ggmsa</code> — Zhou L et al. Briefings in Bioinformatics 23(4):bbac222 (2022).</li>
-<li>The data sources you used — see the Zenodo deposit README for individual citations.</li>
+<a href="https://ramizkrdnz.github.io/msaVariant/articles/tutorial_full_workflow.html">Full workflow tutorial</a> — end-to-end, from FASTA to finished figure.</li>
+<li>ACMG Evidence Codes — how PS1/PM1/PM2/PM5/PP3 are computed <em>(in preparation)</em>.</li>
+<li>Colour Schemes — <code>journal</code>, <code>colorblind</code> (Okabe–Ito), <code>grayscale</code>, and per-element overrides <em>(in preparation)</em>.</li>
+<li>Annotation Tracks — the ClinVar / gnomAD / AlphaMissense / REVEL / CADD and domain geoms <em>(in preparation)</em>.</li>
+<li>Toggling Layers — show/hide any track; the layout re-flows with no gaps <em>(in preparation)</em>.</li>
+<li>Bring Your Own Data — overlay your own annotations with <code><a href="reference/geom_track.html">geom_track()</a></code> <em>(in preparation)</em>.</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+<h2 id="dna-bring-your-own-data-mode">🧬 Bring-your-own-data mode<a class="anchor" aria-label="anchor" href="#dna-bring-your-own-data-mode"></a>
 </h2>
-<p>Artistic-2.0. Note that data fetched via <code><a href="reference/geom_alphamissense.html">geom_alphamissense()</a></code> is licensed CC-BY-NC-SA 4.0, which restricts commercial use of works derived from it.</p>
+<p>No Zenodo bundle required — overlay any per-residue values you already have:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="fl">510</span><span class="op">:</span><span class="fl">530</span>, score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">21</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">ggmsa</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggmsa/man/ggmsa.html" class="external-link">ggmsa</a></span><span class="op">(</span><span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="reference/geom_track.html">geom_track</a></span><span class="op">(</span><span class="va">my_data</span>, msa <span class="op">=</span> <span class="va">fa</span>, value <span class="op">=</span> <span class="st">"score"</span>, name <span class="op">=</span> <span class="st">"Custom track"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="for-maintainers">For maintainers<a class="anchor" aria-label="anchor" href="#for-maintainers"></a>
+<h2 id="warning-data-upload-pending">⚠️ Data upload pending<a class="anchor" aria-label="anchor" href="#warning-data-upload-pending"></a>
 </h2>
-<p>To rebuild the data deposit (gnomAD release, ClinVar refresh, etc.), read <code>data-raw/ZENODO_UPLOAD.md</code>.</p>
+<p>The Zenodo data deposit is <strong>not yet published</strong>, so remote fetches (<code><a href="reference/fetch_gene_data.html">fetch_gene_data()</a></code> and the gene-symbol annotation layers) will currently fail. Until the deposit is live, use your own data via <em>Bring-your-own-data mode</em> above, or load a local bundle with <code><a href="reference/import_local_bundle.html">import_local_bundle()</a></code> (as in the Quick Example). This note will be removed once the deposit is uploaded and wired in.</p>
+</div>
+<div class="section level2">
+<h2 id="page_facing_up-license">📄 License<a class="anchor" aria-label="anchor" href="#page_facing_up-license"></a>
+</h2>
+<p><code>msaVariant</code> is released under the <strong>Artistic-2.0</strong> license.</p>
+<p>Note that data fetched via <code><a href="reference/geom_alphamissense.html">geom_alphamissense()</a></code> is licensed <strong>CC-BY-NC-SA 4.0</strong>, which restricts commercial use of works derived from it. Check the license of every annotation source you display before reusing a figure.</p>
+</div>
+<div class="section level2">
+<h2 id="running-author">🏃 Author<a class="anchor" aria-label="anchor" href="#running-author"></a>
+</h2>
+<p><em>Author and maintainer details are pending and will be added here.</em></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
