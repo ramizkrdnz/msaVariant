@@ -1,7 +1,7 @@
 # msaVariant
 
 > Clinical-genetics multiple sequence alignment visualisation with
-> variant overlay. v0.1.0 — Kaplan Lab.
+> variant overlay. v0.2.0 — Kaplan Lab.
 
 `msaVariant` extends [`ggmsa`](https://github.com/YuLab-SMU/ggmsa)
 with annotation layers tailored to clinical and rare-disease
@@ -43,6 +43,14 @@ ggmsa(fa, char_width = 0.6, seq_name = TRUE) +
 Five layers, one gene symbol per annotation, no manual data
 download. The package fetches per-gene data from a Zenodo deposit
 the first time you use a gene and caches it locally.
+
+> **⚠️ Data upload pending.** The Zenodo data deposit is not yet
+> published, so remote fetches (`fetch_gene_data()` and the
+> gene-symbol annotation layers above) will currently fail. Until
+> the deposit is live you can still use every feature with your own
+> data via *Bring-your-own-data mode* (below) or by importing a
+> local bundle with `import_local_bundle()`. This note will be
+> removed once the deposit is uploaded and wired in.
 
 ## Data architecture
 

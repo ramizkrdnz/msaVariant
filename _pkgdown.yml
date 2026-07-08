@@ -1,0 +1,91 @@
+url: https://ramizkrdnz.github.io/msaVariant
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/introduction.html
+    articles:
+      text: Articles
+      menu:
+      - text: Full workflow tutorial
+        href: articles/tutorial_full_workflow.html
+
+reference:
+- title: Plotting
+  desc: Assemble a complete publication-ready variant overlay figure.
+  contents:
+  - plot_variant_overlay
+
+- title: Annotation geoms
+  desc: >
+    ggplot2 layers that paint variants and per-residue annotation tracks
+    onto a multiple sequence alignment.
+  contents:
+  - geom_variant
+  - geom_track
+  - geom_domain
+  - geom_clinvar
+  - geom_gnomad
+  - geom_cadd
+  - geom_alphamissense
+  - geom_revel
+
+- title: ACMG evidence codes
+  desc: Automatic ACMG/AMP variant-classification evidence codes.
+  contents:
+  - compute_acmg_codes
+
+- title: Colours & scales
+  desc: Publication-quality colour schemes and pathogenicity fills.
+  contents:
+  - resolve_plot_colors
+  - scale_fill_pathogenicity
+
+- title: Conservation & coordinate mapping
+  desc: Per-column conservation scoring and variant-to-MSA coordinate mapping.
+  contents:
+  - conservation_score
+  - map_variant_to_msa
+  - build_msa_coord_map
+
+- title: Data fetching & cache
+  desc: Retrieve per-gene annotation bundles and manage the local cache.
+  contents:
+  - fetch_gene_data
+  - available_genes
+  - clear_cache
+  - cache_location
+  - cache_summary
+
+- title: Data accessors
+  desc: Pull individual annotation tables out of a fetched gene bundle.
+  contents:
+  - get_gene_meta
+  - get_clinvar
+  - get_gnomad
+  - get_cadd
+  - get_revel
+  - get_alphamissense
+  - get_domains
+
+- title: Data structures & validation
+  desc: Construct and validate the gene-bundle data structure.
+  contents:
+  - validate_gene_data
+  - empty_gene_data
+
+- title: Import
+  desc: Load a locally built gene bundle without a remote fetch.
+  contents:
+  - import_local_bundle
+
+- title: Package overview
+  contents:
+  - msaVariant-package
