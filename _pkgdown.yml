@@ -16,6 +16,18 @@ navbar:
       menu:
       - text: Full workflow tutorial
         href: articles/tutorial_full_workflow.html
+      - text: -------
+      - text: "Guides"
+      - text: ACMG evidence codes
+        href: articles/acmg-evidence-codes.html
+      - text: Annotation tracks
+        href: articles/annotation-tracks.html
+      - text: Colour schemes
+        href: articles/colour-schemes.html
+      - text: Toggling layers
+        href: articles/toggling-layers.html
+      - text: Bring your own data
+        href: articles/bring-your-own-data.html
 
 reference:
 - title: Plotting

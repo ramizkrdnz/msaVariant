@@ -72,15 +72,17 @@ Full articles are on the documentation site,
   — install, load data, and build your first overlay.
 - [Full workflow tutorial](https://ramizkrdnz.github.io/msaVariant/articles/tutorial_full_workflow.html)
   — end-to-end, from FASTA to finished figure.
-- ACMG Evidence Codes — how PS1/PM1/PM2/PM5/PP3 are computed *(in preparation)*.
-- Colour Schemes — `journal`, `colorblind` (Okabe–Ito), `grayscale`, and
-  per-element overrides *(in preparation)*.
-- Annotation Tracks — the ClinVar / gnomAD / AlphaMissense / REVEL / CADD
-  and domain geoms *(in preparation)*.
-- Toggling Layers — show/hide any track; the layout re-flows with no gaps
-  *(in preparation)*.
-- Bring Your Own Data — overlay your own annotations with `geom_track()`
-  *(in preparation)*.
+- [ACMG Evidence Codes](https://ramizkrdnz.github.io/msaVariant/articles/acmg-evidence-codes.html)
+  — how PS1/PM1/PM2/PM5/PP3 are computed, and tuning `pp3_min_predictors`.
+- [Annotation Tracks](https://ramizkrdnz.github.io/msaVariant/articles/annotation-tracks.html)
+  — the ClinVar / gnomAD / AlphaMissense / REVEL / CADD and domain tracks,
+  and how each is aggregated per residue.
+- [Colour Schemes](https://ramizkrdnz.github.io/msaVariant/articles/colour-schemes.html)
+  — `journal`, `colorblind` (Okabe–Ito), `grayscale`, and per-element overrides.
+- [Toggling Layers](https://ramizkrdnz.github.io/msaVariant/articles/toggling-layers.html)
+  — show/hide any track; the layout re-flows with no gaps.
+- [Bring Your Own Data](https://ramizkrdnz.github.io/msaVariant/articles/bring-your-own-data.html)
+  — overlay your own annotations with `geom_track()`, or import your own bundle.
 
 ## 🧬 Bring-your-own-data mode
 
