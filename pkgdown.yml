@@ -2,9 +2,14 @@ pandoc: 3.8.3
 pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
+  acmg-evidence-codes: acmg-evidence-codes.html
+  annotation-tracks: annotation-tracks.html
+  bring-your-own-data: bring-your-own-data.html
+  colour-schemes: colour-schemes.html
   introduction: introduction.html
+  toggling-layers: toggling-layers.html
   tutorial_full_workflow: tutorial_full_workflow.html
-last_built: 2026-07-08T14:16Z
+last_built: 2026-07-20T11:48Z
 urls:
   reference: https://ramizkrdnz.github.io/msaVariant/reference
   article: https://ramizkrdnz.github.io/msaVariant/articles
