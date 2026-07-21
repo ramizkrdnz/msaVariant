@@ -157,7 +157,7 @@ import_local_bundle(
   gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpYQ7SEP/msaVariant_cache_2f991340199f/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpNblMmS/msaVariant_cache_1a49786852be/0.1.0/DEMO1.rds
 p <- plot_variant_overlay(
   gene          = "DEMO1",
   aligned_fasta = system.file("extdata", "demo_aligned.fasta",
