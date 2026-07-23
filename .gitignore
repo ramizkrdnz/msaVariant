@@ -64,6 +64,11 @@ rsconnect/
 # OS cruft
 .DS_Store
 
+# Zenodo sandbox test payload: kept durable on disk for re-uploads, but
+# not committed — the two .rds are byte-identical to tests/testthat/
+# fixtures, and MANIFEST/README/LICENSES are regenerable via build_manifest().
+data-raw/zenodo_sandbox_payload/
+
 # NOTE: intentionally NOT ignored (required):
 #   tests/testthat/fixtures/   -> *.rds test fixtures needed by the test suite
 #   data-raw/*.R               -> bundle build scripts (kept as source)

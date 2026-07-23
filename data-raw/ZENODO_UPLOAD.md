@@ -12,6 +12,34 @@ and per-gene files are downloaded on demand. You only run this:
 
 ---
 
+## ⚠️ TODO before the production deposit goes live
+
+**Decide whether `fetch_gene_data()` should also download `MANIFEST.tsv`.**
+
+As of 2026-07-23 the fetcher downloads only the per-gene `<gene>.rds`
+file and *never* fetches `MANIFEST.tsv`. Consequences in the pure-Zenodo
+path (verified end-to-end against a sandbox record):
+
+- **Checksum verification is dormant.** With no manifest in the cache,
+  `.verify_checksum()` returns `TRUE` ("nothing to check against"), so a
+  corrupt/truncated download is not caught. The integrity check only
+  engages after a manifest lands in the cache some other way (e.g. via
+  `import_local_bundle()` alongside a manifest).
+- **`available_genes()` returns empty** until a manifest is present.
+
+Options to consider:
+1. Have `fetch_gene_data()` fetch `MANIFEST.tsv` once (on first download
+   or when missing) into `<cache>/<version>/MANIFEST.tsv`, then verify.
+2. Ship the manifest inside the package (`inst/`) for the pinned data
+   version, so it is always present without a network round-trip.
+3. Leave as-is and document that runtime integrity checks require a
+   manually-placed manifest.
+
+Whichever we pick, wire it before publishing the immutable production
+record so the checksum contract is actually enforced for end users.
+
+---
+
 ## Prerequisites
 
 | Need | Detail |

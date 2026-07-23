@@ -24,6 +24,13 @@ MSAVARIANT_ZENODO_RECORD <- "PENDING_RECORD_ID"
 MSAVARIANT_DATA_DOI      <- "PENDING_DOI"
 
 ## ----- URL pattern -----------------------------------------------
+## Host defaults to production zenodo.org. Set the MSAVARIANT_ZENODO_HOST
+## env var (e.g. "https://sandbox.zenodo.org") to point fetches at the
+## disposable sandbox for testing. Trailing slashes are tolerated.
+.zenodo_host <- function() {
+  sub("/+$", "", Sys.getenv("MSAVARIANT_ZENODO_HOST", "https://zenodo.org"))
+}
+
 .zenodo_url <- function(gene) {
   if (MSAVARIANT_ZENODO_RECORD == "PENDING_RECORD_ID") {
     rlang::abort(c(
@@ -33,9 +40,11 @@ MSAVARIANT_DATA_DOI      <- "PENDING_DOI"
       "i" = "See data-raw/ZENODO_UPLOAD.md for instructions."
     ))
   }
+  ## Modern Zenodo (InvenioRDM) serves files under the plural /records/
+  ## path; the legacy /record/ singular still 301-redirects to it.
   sprintf(
-    "https://zenodo.org/record/%s/files/%s.rds?download=1",
-    MSAVARIANT_ZENODO_RECORD, gene
+    "%s/records/%s/files/%s.rds?download=1",
+    .zenodo_host(), MSAVARIANT_ZENODO_RECORD, gene
   )
 }
 
