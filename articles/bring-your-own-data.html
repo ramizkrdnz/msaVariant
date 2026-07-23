@@ -191,7 +191,7 @@ evidence strip, for a gene that has no Zenodo deposit.</p>
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span><span class="va">path</span>, gene <span class="op">=</span> <span class="st">"DEMO1"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Cache directory does not exist yet (no annotations have been downloaded).</span></span>
-<span><span class="co">#&gt; Imported DEMO1 bundle -&gt; /tmp/Rtmp4dx6ys/msaVariant_cache_1d9711a91b05/0.1.0/DEMO1.rds</span></span></code></pre></div>
+<span><span class="co">#&gt; Imported DEMO1 bundle -&gt; /tmp/Rtmp7a2TsS/msaVariant_cache_1d176ce4aea7/0.1.0/DEMO1.rds</span></span></code></pre></div>
 <p>The file is validated, then copied into the cache
 (<code><a href="../reference/cache_location.html">cache_location()</a></code>), after which
 <code><a href="../reference/fetch_gene_data.html">fetch_gene_data()</a></code> finds it like anything else — no network
@@ -319,10 +319,10 @@ accordingly.</p>
 </h2>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cache_location.html">cache_location</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/tmp/Rtmp4dx6ys/msaVariant_cache_1d9711a91b05"</span></span>
+<span><span class="co">#&gt; [1] "/tmp/Rtmp7a2TsS/msaVariant_cache_1d176ce4aea7"</span></span>
 <span><span class="fu"><a href="../reference/cache_summary.html">cache_summary</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    gene size_kb  cached_on</span></span>
-<span><span class="co">#&gt; 1 DEMO1     3.1 2026-07-21</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 DEMO1     3.1 2026-07-23</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/clear_cache.html">clear_cache</a></span><span class="op">(</span><span class="op">)</span>          <span class="co"># remove everything</span></span>
 <span><span class="fu"><a href="../reference/clear_cache.html">clear_cache</a></span><span class="op">(</span><span class="st">"gnomad"</span><span class="op">)</span>  <span class="co"># remove one slice</span></span></code></pre></div>
