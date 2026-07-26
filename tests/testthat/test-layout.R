@@ -6,7 +6,10 @@
 ## exercise the row-planning logic.
 
 ## The plot reads the bundle from the package cache, so seed it from the
-## fixture; the aligned FASTA fixture is passed explicitly.
+## fixture; the aligned FASTA fixture is passed explicitly. Redirect the
+## cache to a temp dir for this whole file so R CMD check never writes to
+## the real user cache (CRAN/Bioc policy). withr restores both at file end.
+withr::local_envvar(MSAVARIANT_CACHE = withr::local_tempdir())
 import_local_bundle(test_path("fixtures", "TP53.rds"))
 fasta <- test_path("fixtures", "tp53_aligned.fasta")
 

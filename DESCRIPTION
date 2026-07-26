@@ -23,9 +23,9 @@ License: Artistic-2.0
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: ggplot2 (>= 3.4.0), Biostrings, rlang, scales, patchwork,
-        cowplot
+        cowplot, digest
 Suggests: ggmsa (>= 1.6.0), VariantAnnotation, httr, jsonlite, knitr,
-        rmarkdown, testthat (>= 3.0.0), ggrepel, digest, withr
+        rmarkdown, testthat (>= 3.0.0), ggrepel, withr
 biocViews: Visualization, MultipleSequenceAlignment, Genetics,
         VariantAnnotation, SequenceMatching
 VignetteBuilder: knitr

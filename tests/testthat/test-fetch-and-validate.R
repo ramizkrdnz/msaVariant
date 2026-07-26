@@ -145,6 +145,10 @@ test_that("validate_gene_data strict mode aborts on failure", {
 })
 
 test_that("fetch_gene_data aborts cleanly when Zenodo URL is unset", {
+  # Redirect the cache: fetch_gene_data() builds the cache path (which
+  # creates the version dir) before it reaches the URL check, so without
+  # this it would touch the real user cache during R CMD check.
+  withr::local_envvar(MSAVARIANT_CACHE = withr::local_tempdir())
   expect_error(fetch_gene_data("PATL1"),
                "has not been configured")
 })

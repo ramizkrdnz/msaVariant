@@ -197,15 +197,27 @@ p <- plot_variant_overlay(
 ggplot2::ggsave("demo1_R21H.png", p,
                 width = 15, height = 9, dpi = 300, bg = "white")
 
-# Vector — preferred by most journals; text stays selectable
-ggplot2::ggsave("demo1_R21H.pdf", p,
-                width = 15, height = 9, device = grDevices::cairo_pdf)
+# Vector — preferred by most journals; text stays selectable.
+# The default PDF device works everywhere; cairo_pdf (below) is an
+# optional upgrade for better font embedding where it is available.
+ggplot2::ggsave("demo1_R21H.pdf", p, width = 15, height = 9)
+
+# Optional: nicer font embedding, when your R has a working cairo
+# (stock Windows/Linux R; on macOS it needs XQuartz). Falls back
+# gracefully — just use the line above if cairo is unavailable.
+if (capabilities("cairo")) {
+  ggplot2::ggsave("demo1_R21H.pdf", p, width = 15, height = 9,
+                  device = grDevices::cairo_pdf)
+}
 ```
 
 Most journals want 300 DPI for raster figures and will accept — often
 prefer — vector PDF. Because every panel is drawn with ordinary ggplot2
 primitives, the PDF is genuine vector output: residue letters stay
-crisp at any zoom, and a copy-editor can select the text.
+crisp at any zoom, and a copy-editor can select the text. The default
+`ggsave(".pdf")` device produces this on every platform; `cairo_pdf`
+is only an optional refinement for font embedding and needs a
+cairo-capable R (on macOS, that means XQuartz is installed).
 
 If the target is a black-and-white page, render with
 `color_scheme = "grayscale"` rather than letting the printer convert a
