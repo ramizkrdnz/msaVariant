@@ -246,3 +246,9 @@ should supply `aa_change = "R21H"` alongside it.
 * `vignette("annotation-tracks")` — the tables these rules read from
 * `vignette("toggling-layers")` — hiding the strip and individual tracks
 * `?compute_acmg_codes` — the reference page
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

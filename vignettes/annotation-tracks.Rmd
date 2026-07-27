@@ -268,3 +268,9 @@ yourself can be loaded with `import_local_bundle()`. See
 * `vignette("acmg-evidence-codes")` — the rules these tables feed
 * `vignette("toggling-layers")` — hiding tracks you do not need
 * `vignette("colour-schemes")` — restyling track palettes
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

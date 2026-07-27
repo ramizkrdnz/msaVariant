@@ -21,13 +21,13 @@ Description: Extends 'ggmsa' with annotation layers for clinical and
     track layer.
 License: Artistic-2.0
 Encoding: UTF-8
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.5.0)
 Imports: ggplot2 (>= 3.4.0), Biostrings, rlang, scales, patchwork,
         cowplot, digest
 Suggests: ggmsa (>= 1.6.0), VariantAnnotation, httr, jsonlite, knitr,
         rmarkdown, testthat (>= 3.0.0), ggrepel, withr
-biocViews: Visualization, MultipleSequenceAlignment, Genetics,
-        VariantAnnotation, SequenceMatching
+biocViews: Visualization, MultipleSequenceAlignment, Alignment,
+        Genetics, VariantAnnotation, SequenceMatching, DataImport
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/ramizkrdnz/msaVariant,

@@ -9,7 +9,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
-                      eval = FALSE, fig.width = 14, fig.height = 6)
+                      fig.width = 14, fig.height = 6)
 ```
 
 # What this tutorial covers
@@ -26,16 +26,23 @@ running example, because that's the case `msaVariant` was
 originally written for. The workflow generalises to any
 single-protein investigation.
 
+> The code chunks below are shown but not executed when this vignette
+> is built: they require network access (UniProt), an external
+> alignment package, and the Zenodo annotation deposit. Run them in
+> your own session. For a fully runnable, self-contained example that
+> needs none of those, see `vignette("acmg-evidence-codes")` and the
+> other guides, which use the shipped synthetic `DEMO1` bundle.
+
 # Step 1 — Install the alignment software
 
 `msaVariant` does not perform alignment itself. Choose any
 mainstream protein-MSA tool; we recommend `msa` (Bioconductor,
-ships MUSCLE/ClustalW/ClustalOmega) because it stays inside R:
+ships MUSCLE/ClustalW/ClustalOmega) because it stays inside R.
+Install it once in your R console (shown here for reference, not
+run by this vignette):
 
-```{r}
-if (!require("BiocManager")) install.packages("BiocManager")
-BiocManager::install("msa")
-```
+    if (!require("BiocManager")) install.packages("BiocManager")
+    BiocManager::install("msa")
 
 Standalone alternatives (run from the shell, then load with
 `Biostrings::readAAMultipleAlignment`):
@@ -53,7 +60,7 @@ interest in human plus several orthologs spanning the evolutionary
 distance you want to argue about. The faster and more reliable
 route is to pull canonical sequences from UniProt by accession:
 
-```{r}
+```{r fetch-orthologs, eval = FALSE}
 library(Biostrings)
 
 # UniProt accessions for PATL1 across eight species
@@ -88,7 +95,7 @@ writeXStringSet(unaligned, "patl1_unaligned.fasta")
 
 # Step 3 — Align them
 
-```{r}
+```{r align, eval = FALSE}
 library(msa)
 
 aln <- msa(unaligned, method = "Muscle", type = "protein")
@@ -109,7 +116,7 @@ The full alignment is too wide to render as a single figure. Pick
 a residue range in the human reference where your variant sits.
 For the PATL1 K518fs case, we focus on residues 490..550:
 
-```{r}
+```{r coord-window, eval = FALSE}
 library(msaVariant)
 
 # Use the package's coord-map utility to convert
@@ -123,7 +130,7 @@ c(start_col, end_col)
 
 Extract that window into a smaller FASTA for plotting:
 
-```{r}
+```{r extract-window, eval = FALSE}
 aa <- readAAStringSet("patl1_aligned.fasta")
 window <- subseq(aa, start = start_col, end = end_col)
 writeXStringSet(window, "patl1_window.fasta")
@@ -131,7 +138,7 @@ writeXStringSet(window, "patl1_window.fasta")
 
 # Step 5 — Define the patient's variant
 
-```{r}
+```{r define-variant, eval = FALSE}
 patient <- data.frame(
   pos         = 518 - 490 + 1,    # position within the window
   pos_end     = 550 - 490 + 1,    # frameshift extends to end of window
@@ -148,7 +155,7 @@ alignment columns automatically.
 
 # Step 6 — The figure
 
-```{r, fig.width = 14, fig.height = 6}
+```{r figure, eval = FALSE, fig.width = 14, fig.height = 6}
 library(ggmsa)
 
 ggmsa("patl1_window.fasta",
@@ -192,3 +199,9 @@ For any other gene, the only changes are:
 3. The residue window in Steps 4-5.
 
 Everything else stays the same.
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

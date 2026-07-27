@@ -230,3 +230,9 @@ onto near-identical greys.
 
 * `vignette("toggling-layers")` — removing tracks to simplify a figure
 * `?plot_variant_overlay` — every colour argument in one place
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

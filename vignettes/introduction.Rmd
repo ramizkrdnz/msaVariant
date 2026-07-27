@@ -9,57 +9,84 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
-                     fig.width = 12, fig.height = 5,
-                     eval = FALSE)
+                      fig.width = 12, fig.height = 5)
 ```
 
 # What this package does
 
 `msaVariant` overlays clinical-genetics evidence onto a multiple
-sequence alignment (MSA) in a single ggplot2 figure. Each layer
-paints a different kind of evidence:
+sequence alignment (MSA) in a single figure. Each layer paints a
+different kind of evidence:
 
-* **`geom_variant()`** — the patient's variant(s)
-* **`geom_domain()`** — InterPro/Pfam protein domains
-* **`geom_gnomad()`** — gnomAD allele frequencies
-* **`geom_clinvar()`** — ClinVar pathogenicity calls
-* **`geom_alphamissense()`** — AlphaMissense in silico scores
-* **`geom_revel()` / `geom_cadd()`** — REVEL / CADD scores
-* **`geom_track()`** — generic per-residue track (bring your own data)
+* **the variant** — the patient's substitution, highlighted through
+  every panel
+* **protein domains** — InterPro/Pfam regions
+* **gnomAD** — population allele frequencies
+* **ClinVar** — clinical pathogenicity calls
+* **AlphaMissense / REVEL / CADD** — in-silico pathogenicity scores
+* an automatic **ACMG evidence-code** strip (PS1, PM1, PM2, PM5, PP3)
+* **`geom_track()`** — a generic per-residue track (bring your own data)
 
-# How the data layer works
+# A runnable example
 
-The five annotation-database layers (`geom_gnomad`, `geom_clinvar`,
-`geom_alphamissense`, `geom_revel`, `geom_cadd`) and `geom_domain`
-fetch their data from a Zenodo deposit the first time you use a
-gene, and cache it locally for next time. The package code itself
-ships with no clinical-genetics data — only the visualisation
-machinery.
+Everything below uses the synthetic **`DEMO1`** bundle that ships with
+the package — fabricated data, no network, no real predictions — so it
+runs out of the box. We point the cache at a temporary directory so the
+example never touches your real cache.
+
+```{r demo, message = FALSE}
+library(msaVariant)
+
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
+)
+
+plot_variant_overlay(
+  gene          = "DEMO1",
+  aligned_fasta = system.file("extdata", "demo_aligned.fasta",
+                              package = "msaVariant"),
+  variant_pos   = 21,
+  variant_label = "p.R21H"
+)
+```
+
+The five "Learn more" guides build on this: `vignette("acmg-evidence-codes")`,
+`vignette("annotation-tracks")`, `vignette("colour-schemes")`,
+`vignette("toggling-layers")`, and `vignette("bring-your-own-data")`.
+
+# How the data layer works for real genes
+
+For a real gene you do not ship the data yourself. The annotation
+tables (`gnomAD`, `ClinVar`, `AlphaMissense`, `REVEL`, `CADD`, domains)
+are fetched from a Zenodo deposit the first time you use a gene, then
+cached locally. The package code itself ships with no clinical-genetics
+data — only the visualisation machinery and the synthetic `DEMO1`
+example.
 
 This means:
 
 1. The package install is small and fast.
-2. You always get the data version we pinned to the package
-   release, so the figure is reproducible.
-3. Updating the data (when gnomAD releases v5, for example) is a
-   matter of running our build scripts and re-uploading to Zenodo.
+2. You always get the data version pinned to the package release, so
+   the figure is reproducible.
+3. Updating the data (when gnomAD releases a new version, say) is a
+   matter of re-running the build scripts and re-uploading to Zenodo.
 
-The first time you call e.g. `geom_gnomad(gene = "PATL1", msa = fa)`,
-the package will download ~100 KB from Zenodo and cache it at
-`tools::R_user_dir("msaVariant", "cache")`. Subsequent calls
-are instant.
+The chunk below shows the real-gene workflow with `ggmsa`. It is not
+run here because it needs the (Suggested) `ggmsa` package and network
+access to the deposit; see `vignette("tutorial_full_workflow")` for the
+end-to-end version.
 
-# The PATL1 worked example
-
-```{r}
+```{r patl1, eval = FALSE}
 library(ggmsa)
 library(msaVariant)
 
-# 1. Your alignment: PATL1 orthologs around residue 518
+# Your alignment: PATL1 orthologs around residue 518
 fa <- system.file("extdata", "patl1_orthologs.fasta",
                   package = "msaVariant")
 
-# 2. The patient's variant
+# The patient's variant
 patient <- data.frame(
   pos         = 29,                # K518 in the demo stretch
   pos_end     = 61,                # frameshift through end of window
@@ -68,7 +95,6 @@ patient <- data.frame(
                        levels = c("frameshift","missense","nonsense"))
 )
 
-# 3. The figure
 ggmsa(fa, char_width = 0.6, seq_name = TRUE) +
   geom_variant(patient,                  msa = fa) +
   geom_domain(gene = "PATL1",            msa = fa) +
@@ -77,36 +103,37 @@ ggmsa(fa, char_width = 0.6, seq_name = TRUE) +
   geom_gnomad(gene = "PATL1",            msa = fa)
 ```
 
-That's it. Five layers, one gene symbol per annotation, no manual
-data download.
-
 # Bringing your own data
 
-If you already have a custom annotation (a lab-internal database,
-a paper's supplementary table, etc.), pass it via `data = ` instead
-of `gene = `:
+If you already have a custom annotation (a lab-internal database, a
+paper's supplementary table, etc.), pass it via `geom_track()` instead
+of a gene symbol. This chunk also needs `ggmsa`, so it is shown but not
+run; see `vignette("bring-your-own-data")` for a runnable version.
 
-```{r}
-my_annotations <- read.csv("my_annotations.csv")
-ggmsa(fa) +
-  geom_track(my_annotations,
-             msa = fa, value = "score",
-             name = "My score")
+```{r byo, eval = FALSE}
+my_annotations <- read.csv("my_annotations.csv")   # cols: pos, score
+ggmsa::ggmsa(fa) +
+  geom_track(my_annotations, msa = fa,
+             value = "score", name = "My score")
 ```
-
-The `data = ` and `gene = ` modes are mutually exclusive — pass one
-or the other, never both.
 
 # Cache management
 
-```{r}
+```{r cache, eval = FALSE}
 cache_location()       # where the cache lives
-clear_cache()          # nuke everything
-clear_cache("gnomad")  # only the gnomAD slice
+cache_summary()        # what is currently cached
+clear_cache()          # remove everything
+clear_cache("gnomad")  # remove only one slice
 ```
 
 # Citation
 
-If you use `msaVariant` in published work, please cite both the
-package and the underlying data sources (see the Zenodo deposit
-README for the full citation list).
+If you use `msaVariant` in published work, please cite both the package
+and the underlying data sources (see the Zenodo deposit README for the
+full citation list).
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

@@ -243,3 +243,9 @@ Sys.setenv(MSAVARIANT_CACHE = "~/projects/my_study/msaVariant_cache")
 * `?geom_track`, `?import_local_bundle`, `?validate_gene_data`
 * `vignette("annotation-tracks")` — what each built-in table holds
 * `vignette("acmg-evidence-codes")` — the rules your tables will feed
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

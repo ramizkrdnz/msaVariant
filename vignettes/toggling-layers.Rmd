@@ -187,3 +187,9 @@ every track lines up with the alignment column above it.
 * `vignette("annotation-tracks")` — what each track shows
 * `vignette("colour-schemes")` — restyling what is left after toggling
 * `?plot_variant_overlay` — all arguments
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
