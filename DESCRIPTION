@@ -4,8 +4,13 @@ Title: Clinical-Genetics Multiple Sequence Alignment Visualisation with
         Variant Overlay
 Version: 0.2.0
 Authors@R: c(
-    person("Your", "Name", email = "you@example.org",
-           role = c("aut", "cre")),
+    person("Oktay I.", "Kaplan", role = "aut",
+           comment = c(ORCID = "0000-0002-8733-0920")),
+    person("Ramiz", "Karadeniz", email = "ramiz.karadeniz81@gmail.com",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0000-3290-4707")),
+    person("Sebiha", "Cevik", role = "aut",
+           comment = c(ORCID = "0000-0002-0935-1929")),
     person("Guangchuang", "Yu", role = "ctb",
            comment = "ggmsa, on which this package builds"))
 Description: Extends 'ggmsa' with annotation layers for clinical and
@@ -30,12 +35,8 @@ biocViews: Visualization, MultipleSequenceAlignment, Alignment,
         Genetics, VariantAnnotation, SequenceMatching, DataImport
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://github.com/ramizkrdnz/msaVariant,
-        https://ramizkrdnz.github.io/msaVariant/
-BugReports: https://github.com/ramizkrdnz/msaVariant/issues
+URL: https://github.com/thekaplanlab/msaVariant,
+        https://thekaplanlab.github.io/msaVariant/
+BugReports: https://github.com/thekaplanlab/msaVariant/issues
 NeedsCompilation: no
-Packaged: 2026-05-20 08:12:24 UTC; root
-Author: Your Name [aut, cre],
-  Guangchuang Yu [ctb] (ggmsa, on which this package builds)
-Maintainer: Your Name <you@example.org>
 Config/roxygen2/version: 8.0.0
