@@ -73,68 +73,92 @@
 <h2 id="what-this-package-does">What this package does<a class="anchor" aria-label="anchor" href="#what-this-package-does"></a>
 </h2>
 <p><code>msaVariant</code> overlays clinical-genetics evidence onto a
-multiple sequence alignment (MSA) in a single ggplot2 figure. Each layer
-paints a different kind of evidence:</p>
+multiple sequence alignment (MSA) in a single figure. Each layer paints
+a different kind of evidence:</p>
 <ul>
 <li>
-<strong><code><a href="../reference/geom_variant.html">geom_variant()</a></code></strong> — the patient’s
-variant(s)</li>
+<strong>the variant</strong> — the patient’s substitution,
+highlighted through every panel</li>
 <li>
-<strong><code><a href="../reference/geom_domain.html">geom_domain()</a></code></strong> — InterPro/Pfam protein
-domains</li>
+<strong>protein domains</strong> — InterPro/Pfam regions</li>
 <li>
-<strong><code><a href="../reference/geom_gnomad.html">geom_gnomad()</a></code></strong> — gnomAD allele
-frequencies</li>
+<strong>gnomAD</strong> — population allele frequencies</li>
 <li>
-<strong><code><a href="../reference/geom_clinvar.html">geom_clinvar()</a></code></strong> — ClinVar pathogenicity
-calls</li>
+<strong>ClinVar</strong> — clinical pathogenicity calls</li>
 <li>
-<strong><code><a href="../reference/geom_alphamissense.html">geom_alphamissense()</a></code></strong> — AlphaMissense
-in silico scores</li>
+<strong>AlphaMissense / REVEL / CADD</strong> — in-silico
+pathogenicity scores</li>
+<li>an automatic <strong>ACMG evidence-code</strong> strip (PS1, PM1,
+PM2, PM5, PP3)</li>
 <li>
-<strong><code><a href="../reference/geom_revel.html">geom_revel()</a></code> /
-<code><a href="../reference/geom_cadd.html">geom_cadd()</a></code></strong> — REVEL / CADD scores</li>
-<li>
-<strong><code><a href="../reference/geom_track.html">geom_track()</a></code></strong> — generic per-residue
+<strong><code><a href="../reference/geom_track.html">geom_track()</a></code></strong> — a generic per-residue
 track (bring your own data)</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="how-the-data-layer-works">How the data layer works<a class="anchor" aria-label="anchor" href="#how-the-data-layer-works"></a>
+<h2 id="a-runnable-example">A runnable example<a class="anchor" aria-label="anchor" href="#a-runnable-example"></a>
 </h2>
-<p>The five annotation-database layers (<code>geom_gnomad</code>,
-<code>geom_clinvar</code>, <code>geom_alphamissense</code>,
-<code>geom_revel</code>, <code>geom_cadd</code>) and
-<code>geom_domain</code> fetch their data from a Zenodo deposit the
-first time you use a gene, and cache it locally for next time. The
-package code itself ships with no clinical-genetics data — only the
-visualisation machinery.</p>
+<p>Everything below uses the synthetic
+<strong><code>DEMO1</code></strong> bundle that ships with the package —
+fabricated data, no network, no real predictions — so it runs out of the
+box. We point the cache at a temporary directory so the example never
+touches your real cache.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ramizkrdnz/msaVariant" class="external-link">msaVariant</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MSAVARIANT_CACHE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"msaVariant_cache_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span>
+<span>  gene <span class="op">=</span> <span class="st">"DEMO1"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_variant_overlay.html">plot_variant_overlay</a></span><span class="op">(</span></span>
+<span>  gene          <span class="op">=</span> <span class="st">"DEMO1"</span>,</span>
+<span>  aligned_fasta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"demo_aligned.fasta"</span>,</span>
+<span>                              package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span>
+<span>  variant_pos   <span class="op">=</span> <span class="fl">21</span>,</span>
+<span>  variant_label <span class="op">=</span> <span class="st">"p.R21H"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="introduction_files/figure-html/demo-1.png" class="r-plt" alt="" width="1152"></p>
+<p>The five “Learn more” guides build on this:
+<code><a href="../articles/acmg-evidence-codes.html">vignette("acmg-evidence-codes")</a></code>,
+<code><a href="../articles/annotation-tracks.html">vignette("annotation-tracks")</a></code>,
+<code><a href="../articles/colour-schemes.html">vignette("colour-schemes")</a></code>,
+<code><a href="../articles/toggling-layers.html">vignette("toggling-layers")</a></code>, and
+<code><a href="../articles/bring-your-own-data.html">vignette("bring-your-own-data")</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="how-the-data-layer-works-for-real-genes">How the data layer works for real genes<a class="anchor" aria-label="anchor" href="#how-the-data-layer-works-for-real-genes"></a>
+</h2>
+<p>For a real gene you do not ship the data yourself. The annotation
+tables (<code>gnomAD</code>, <code>ClinVar</code>,
+<code>AlphaMissense</code>, <code>REVEL</code>, <code>CADD</code>,
+domains) are fetched from a Zenodo deposit the first time you use a
+gene, then cached locally. The package code itself ships with no
+clinical-genetics data — only the visualisation machinery and the
+synthetic <code>DEMO1</code> example.</p>
 <p>This means:</p>
 <ol style="list-style-type: decimal">
 <li>The package install is small and fast.</li>
-<li>You always get the data version we pinned to the package release, so
+<li>You always get the data version pinned to the package release, so
 the figure is reproducible.</li>
-<li>Updating the data (when gnomAD releases v5, for example) is a matter
-of running our build scripts and re-uploading to Zenodo.</li>
+<li>Updating the data (when gnomAD releases a new version, say) is a
+matter of re-running the build scripts and re-uploading to Zenodo.</li>
 </ol>
-<p>The first time you call
-e.g. <code>geom_gnomad(gene = "PATL1", msa = fa)</code>, the package
-will download ~100 KB from Zenodo and cache it at
-<code>tools::R_user_dir("msaVariant", "cache")</code>. Subsequent calls
-are instant.</p>
-</div>
-<div class="section level2">
-<h2 id="the-patl1-worked-example">The PATL1 worked example<a class="anchor" aria-label="anchor" href="#the-patl1-worked-example"></a>
-</h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>The chunk below shows the real-gene workflow with <code>ggmsa</code>.
+It is not run here because it needs the (Suggested) <code>ggmsa</code>
+package and network access to the deposit; see
+<code><a href="../articles/tutorial_full_workflow.html">vignette("tutorial_full_workflow")</a></code> for the end-to-end
+version.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doi.org/10.1093/bib/bbac222(paper)" class="external-link">ggmsa</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ramizkrdnz/msaVariant" class="external-link">msaVariant</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 1. Your alignment: PATL1 orthologs around residue 518</span></span>
+<span><span class="co"># Your alignment: PATL1 orthologs around residue 518</span></span>
 <span><span class="va">fa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"patl1_orthologs.fasta"</span>,</span>
 <span>                  package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 2. The patient's variant</span></span>
+<span><span class="co"># The patient's variant</span></span>
 <span><span class="va">patient</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  pos         <span class="op">=</span> <span class="fl">29</span>,                <span class="co"># K518 in the demo stretch</span></span>
 <span>  pos_end     <span class="op">=</span> <span class="fl">61</span>,                <span class="co"># frameshift through end of window</span></span>
@@ -143,38 +167,35 @@ are instant.</p>
 <span>                       levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"frameshift"</span>,<span class="st">"missense"</span>,<span class="st">"nonsense"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 3. The figure</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ggmsa/man/ggmsa.html" class="external-link">ggmsa</a></span><span class="op">(</span><span class="va">fa</span>, char_width <span class="op">=</span> <span class="fl">0.6</span>, seq_name <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_variant.html">geom_variant</a></span><span class="op">(</span><span class="va">patient</span>,                  msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_domain.html">geom_domain</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,            msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_clinvar.html">geom_clinvar</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,           msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_alphamissense.html">geom_alphamissense</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,     msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/geom_gnomad.html">geom_gnomad</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="st">"PATL1"</span>,            msa <span class="op">=</span> <span class="va">fa</span><span class="op">)</span></span></code></pre></div>
-<p>That’s it. Five layers, one gene symbol per annotation, no manual
-data download.</p>
 </div>
 <div class="section level2">
 <h2 id="bringing-your-own-data">Bringing your own data<a class="anchor" aria-label="anchor" href="#bringing-your-own-data"></a>
 </h2>
 <p>If you already have a custom annotation (a lab-internal database, a
-paper’s supplementary table, etc.), pass it via <code>data =</code>
-instead of <code>gene =</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"my_annotations.csv"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/ggmsa/man/ggmsa.html" class="external-link">ggmsa</a></span><span class="op">(</span><span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/geom_track.html">geom_track</a></span><span class="op">(</span><span class="va">my_annotations</span>,</span>
-<span>             msa <span class="op">=</span> <span class="va">fa</span>, value <span class="op">=</span> <span class="st">"score"</span>,</span>
-<span>             name <span class="op">=</span> <span class="st">"My score"</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>data =</code> and <code>gene =</code> modes are mutually
-exclusive — pass one or the other, never both.</p>
+paper’s supplementary table, etc.), pass it via
+<code><a href="../reference/geom_track.html">geom_track()</a></code> instead of a gene symbol. This chunk also
+needs <code>ggmsa</code>, so it is shown but not run; see
+<code><a href="../articles/bring-your-own-data.html">vignette("bring-your-own-data")</a></code> for a runnable version.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"my_annotations.csv"</span><span class="op">)</span>   <span class="co"># cols: pos, score</span></span>
+<span><span class="fu">ggmsa</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggmsa/man/ggmsa.html" class="external-link">ggmsa</a></span><span class="op">(</span><span class="va">fa</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/geom_track.html">geom_track</a></span><span class="op">(</span><span class="va">my_annotations</span>, msa <span class="op">=</span> <span class="va">fa</span>,</span>
+<span>             value <span class="op">=</span> <span class="st">"score"</span>, name <span class="op">=</span> <span class="st">"My score"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="cache-management">Cache management<a class="anchor" aria-label="anchor" href="#cache-management"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cache_location.html">cache_location</a></span><span class="op">(</span><span class="op">)</span>       <span class="co"># where the cache lives</span></span>
-<span><span class="fu"><a href="../reference/clear_cache.html">clear_cache</a></span><span class="op">(</span><span class="op">)</span>          <span class="co"># nuke everything</span></span>
-<span><span class="fu"><a href="../reference/clear_cache.html">clear_cache</a></span><span class="op">(</span><span class="st">"gnomad"</span><span class="op">)</span>  <span class="co"># only the gnomAD slice</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/cache_summary.html">cache_summary</a></span><span class="op">(</span><span class="op">)</span>        <span class="co"># what is currently cached</span></span>
+<span><span class="fu"><a href="../reference/clear_cache.html">clear_cache</a></span><span class="op">(</span><span class="op">)</span>          <span class="co"># remove everything</span></span>
+<span><span class="fu"><a href="../reference/clear_cache.html">clear_cache</a></span><span class="op">(</span><span class="st">"gnomad"</span><span class="op">)</span>  <span class="co"># remove only one slice</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
@@ -182,6 +203,55 @@ exclusive — pass one or the other, never both.</p>
 <p>If you use <code>msaVariant</code> in published work, please cite
 both the package and the underlying data sources (see the Zenodo deposit
 README for the full citation list).</p>
+</div>
+<div class="section level2">
+<h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.6.1 (2026-06-24)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">#&gt;  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">#&gt; [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: UTC</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] msaVariant_0.2.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        </span></span>
+<span><span class="co">#&gt;  [4] compiler_4.6.1      crayon_1.5.3        tidyselect_1.2.1   </span></span>
+<span><span class="co">#&gt;  [7] Biostrings_2.80.1   jquerylib_0.1.4     systemfonts_1.3.2  </span></span>
+<span><span class="co">#&gt; [10] IRanges_2.46.0      Seqinfo_1.2.0       scales_1.4.0       </span></span>
+<span><span class="co">#&gt; [13] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      </span></span>
+<span><span class="co">#&gt; [16] ggplot2_4.0.3       R6_2.6.1            XVector_0.52.0     </span></span>
+<span><span class="co">#&gt; [19] patchwork_1.3.2     labeling_0.4.3      generics_0.1.4     </span></span>
+<span><span class="co">#&gt; [22] knitr_1.51          BiocGenerics_0.58.1 htmlwidgets_1.6.4  </span></span>
+<span><span class="co">#&gt; [25] tibble_3.3.1        desc_1.4.3          pillar_1.11.1      </span></span>
+<span><span class="co">#&gt; [28] bslib_0.11.0        RColorBrewer_1.1-3  rlang_1.3.0        </span></span>
+<span><span class="co">#&gt; [31] cachem_1.1.0        xfun_0.60           S7_0.2.2           </span></span>
+<span><span class="co">#&gt; [34] fs_2.1.0            sass_0.4.10         otel_0.2.0         </span></span>
+<span><span class="co">#&gt; [37] cli_3.6.6           withr_3.0.3         magrittr_2.0.5     </span></span>
+<span><span class="co">#&gt; [40] pkgdown_2.2.1       digest_0.6.39       grid_4.6.1         </span></span>
+<span><span class="co">#&gt; [43] cowplot_1.2.0       lifecycle_1.0.5     vctrs_0.7.3        </span></span>
+<span><span class="co">#&gt; [46] S4Vectors_0.50.1    evaluate_1.0.5      glue_1.8.1         </span></span>
+<span><span class="co">#&gt; [49] farver_2.1.2        ragg_1.5.2          stats4_4.6.1       </span></span>
+<span><span class="co">#&gt; [52] rmarkdown_2.31      pkgconfig_2.0.3     tools_4.6.1        </span></span>
+<span><span class="co">#&gt; [55] htmltools_0.5.9</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

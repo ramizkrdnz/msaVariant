@@ -205,3 +205,53 @@ lines up with the alignment column above it.
   — restyling what is left after toggling
 - [`?plot_variant_overlay`](https://ramizkrdnz.github.io/msaVariant/reference/plot_variant_overlay.md)
   — all arguments
+
+## Session info
+
+``` r
+
+sessionInfo()
+#> R version 4.6.1 (2026-06-24)
+#> Platform: x86_64-pc-linux-gnu
+#> Running under: Ubuntu 24.04.4 LTS
+#> 
+#> Matrix products: default
+#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+#>  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+#>  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+#> [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+#> 
+#> time zone: UTC
+#> tzcode source: system (glibc)
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] msaVariant_0.2.0
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] gtable_0.3.6        jsonlite_2.0.0      dplyr_1.2.1        
+#>  [4] compiler_4.6.1      crayon_1.5.3        tidyselect_1.2.1   
+#>  [7] Biostrings_2.80.1   jquerylib_0.1.4     systemfonts_1.3.2  
+#> [10] IRanges_2.46.0      Seqinfo_1.2.0       scales_1.4.0       
+#> [13] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
+#> [16] ggplot2_4.0.3       R6_2.6.1            XVector_0.52.0     
+#> [19] patchwork_1.3.2     labeling_0.4.3      generics_0.1.4     
+#> [22] knitr_1.51          BiocGenerics_0.58.1 htmlwidgets_1.6.4  
+#> [25] tibble_3.3.1        desc_1.4.3          pillar_1.11.1      
+#> [28] bslib_0.11.0        RColorBrewer_1.1-3  rlang_1.3.0        
+#> [31] cachem_1.1.0        xfun_0.60           S7_0.2.2           
+#> [34] fs_2.1.0            sass_0.4.10         otel_0.2.0         
+#> [37] cli_3.6.6           withr_3.0.3         magrittr_2.0.5     
+#> [40] pkgdown_2.2.1       digest_0.6.39       grid_4.6.1         
+#> [43] cowplot_1.2.0       lifecycle_1.0.5     vctrs_0.7.3        
+#> [46] S4Vectors_0.50.1    evaluate_1.0.5      glue_1.8.1         
+#> [49] farver_2.1.2        ragg_1.5.2          stats4_4.6.1       
+#> [52] rmarkdown_2.31      pkgconfig_2.0.3     tools_4.6.1        
+#> [55] htmltools_0.5.9
+```
