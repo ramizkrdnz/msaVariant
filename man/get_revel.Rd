@@ -18,3 +18,11 @@ A `data.frame` per spec; returns `NULL` on failure.
 Per-substitution REVEL ensemble scores in `[0, 1]`. Higher
 indicates more likely pathogenic.
 }
+\examples{
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
+)
+head(get_revel("DEMO1"))
+}

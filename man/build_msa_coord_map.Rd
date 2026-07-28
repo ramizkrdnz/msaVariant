@@ -23,3 +23,8 @@ For one row of a multiple sequence alignment (the "reference"
 sequence), build a map from ungapped residue position
 (1, 2, 3, ...) to alignment column.
 }
+\examples{
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+cmap <- build_msa_coord_map(fa, ref_name = "DEMO1_HUMAN")
+head(cmap)
+}

@@ -69,6 +69,11 @@
 #' @param msa,ref_name Reference MSA and sequence name.
 #' @param y_offset,track_height Track geometry.
 #' @return A list of ggplot2 layers (or `NULL`).
+#' @examples
+#' ## Build the layer from a data frame (no network, no ggmsa needed).
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' layer <- geom_gnomad(data = demo$gnomad, msa = fa, ref_name = "DEMO1_HUMAN")
 #' @export
 geom_gnomad <- function(data = NULL, gene = NULL,
                         msa, ref_name = NULL,
@@ -101,6 +106,10 @@ geom_gnomad <- function(data = NULL, gene = NULL,
 #' @param significance Character vector of significance levels to
 #'   show (default: all five ACMG tiers).
 #' @return A list of ggplot2 layers (or `NULL`).
+#' @examples
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' layer <- geom_clinvar(data = demo$clinvar, msa = fa, ref_name = "DEMO1_HUMAN")
 #' @export
 geom_clinvar <- function(data = NULL, gene = NULL,
                          msa, ref_name = NULL,
@@ -150,6 +159,11 @@ geom_clinvar <- function(data = NULL, gene = NULL,
 #' @param summary How to aggregate the 19 alt scores at each
 #'   position. One of `"mean"` (default), `"max"`, `"median"`.
 #' @return A list of ggplot2 layers (or `NULL`).
+#' @examples
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' layer <- geom_alphamissense(data = demo$alphamissense, msa = fa,
+#'                             ref_name = "DEMO1_HUMAN")
 #' @export
 geom_alphamissense <- function(data = NULL, gene = NULL,
                                msa, ref_name = NULL,
@@ -174,6 +188,10 @@ geom_alphamissense <- function(data = NULL, gene = NULL,
 #'
 #' @inheritParams geom_alphamissense
 #' @return A list of ggplot2 layers (or `NULL`).
+#' @examples
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' layer <- geom_revel(data = demo$revel, msa = fa, ref_name = "DEMO1_HUMAN")
 #' @export
 geom_revel <- function(data = NULL, gene = NULL,
                        msa, ref_name = NULL,
@@ -202,6 +220,10 @@ geom_revel <- function(data = NULL, gene = NULL,
 #' @param value_range Length-2 PHRED range for the colour scale.
 #'   Default `c(0, 40)` covers the practically informative range.
 #' @return A list of ggplot2 layers (or `NULL`).
+#' @examples
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' layer <- geom_cadd(data = demo$cadd, msa = fa, ref_name = "DEMO1_HUMAN")
 #' @export
 geom_cadd <- function(data = NULL, gene = NULL,
                       msa, ref_name = NULL,

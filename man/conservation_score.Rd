@@ -33,3 +33,8 @@ A data.frame with columns `msa_col` and `score`.
 \description{
 Per-column conservation score for an MSA
 }
+\examples{
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+cons <- conservation_score(fa)
+head(cons)
+}

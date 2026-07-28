@@ -92,6 +92,21 @@ MSAVARIANT_DATA_DOI      <- "PENDING_DOI"
 #' @return A named list with 7 elements (`meta`, `domains`,
 #'   `clinvar`, `gnomad`, `alphamissense`, `revel`, `cadd`), or
 #'   `NULL` with a warning on failure.
+#' @examples
+#' ## Runnable with the shipped synthetic DEMO1 bundle (no network).
+#' ## A temporary cache keeps the example off your real cache directory.
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' b <- fetch_gene_data("DEMO1")
+#' names(b)
+#'
+#' \dontrun{
+#' ## Real genes are downloaded from the Zenodo data deposit.
+#' b <- fetch_gene_data("TP53")
+#' }
 #' @export
 fetch_gene_data <- function(gene,
                              force_refresh   = FALSE,
@@ -224,6 +239,14 @@ fetch_gene_data <- function(gene,
 #' @param gene If supplied, only that gene's cached file is removed.
 #'   If `NULL` (default), the entire cache is removed.
 #' @return Invisibly, the number of files deleted.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' clear_cache("DEMO1")   # remove one gene
+#' clear_cache()          # remove everything
 #' @export
 clear_cache <- function(gene = NULL) {
   base <- file.path(.cache_dir(), MSAVARIANT_DATA_VERSION)
@@ -249,6 +272,9 @@ clear_cache <- function(gene = NULL) {
 
 #' Show the location of the msaVariant cache
 #' @return The cache directory path (character).
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' cache_location()
 #' @export
 cache_location <- function() {
   d <- .cache_dir()
@@ -267,6 +293,13 @@ cache_location <- function() {
 #' @return A `data.frame` with columns `gene`, `size_kb`, `cached_on`,
 #'   sorted by size descending. Returns an empty data.frame if the
 #'   cache is empty.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' cache_summary()
 #' @export
 cache_summary <- function() {
   base <- file.path(.cache_dir(), MSAVARIANT_DATA_VERSION)

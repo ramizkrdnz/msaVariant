@@ -18,3 +18,12 @@ Removes locally-cached annotation files. Use this if you suspect
 a cached file is stale or corrupt, or if you want to free disk
 space.
 }
+\examples{
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
+)
+clear_cache("DEMO1")   # remove one gene
+clear_cache()          # remove everything
+}

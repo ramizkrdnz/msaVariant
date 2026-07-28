@@ -29,6 +29,14 @@
 #' @return A `data.frame` with columns `start`, `end`, `name`,
 #'   `accession`, `source` (factor), and optionally `evidence`.
 #'   Returns `NULL` if download failed.
+#' @examples
+#' ## Runnable with the shipped synthetic DEMO1 bundle (no network).
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' get_domains("DEMO1")
 #' @export
 get_domains <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "domains", force_refresh)
@@ -45,6 +53,13 @@ get_domains <- function(gene, force_refresh = FALSE) {
 #'   `aa_change`, `significance` (factor), `review_status` (factor),
 #'   `clinvar_id`, and optionally `condition`, `last_evaluated`.
 #'   Returns `NULL` if download failed.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' head(get_clinvar("DEMO1"))
 #' @export
 get_clinvar <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "clinvar", force_refresh)
@@ -60,6 +75,13 @@ get_clinvar <- function(gene, force_refresh = FALSE) {
 #' @param force_refresh Redownload even if cached.
 #' @return A `data.frame` per `DATA_FORMAT_SPEC.md`. Returns `NULL`
 #'   if download failed.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' head(get_gnomad("DEMO1"))
 #' @export
 get_gnomad <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "gnomad", force_refresh)
@@ -78,6 +100,13 @@ get_gnomad <- function(gene, force_refresh = FALSE) {
 #' @return A `data.frame` with `pos`, `aa_ref`, `aa_alt`, `aa_change`,
 #'   `am_score`, `am_class` (factor: likely_benign / ambiguous /
 #'   likely_pathogenic). Returns `NULL` if download failed.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' head(get_alphamissense("DEMO1"))
 #' @export
 get_alphamissense <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "alphamissense", force_refresh)
@@ -91,6 +120,13 @@ get_alphamissense <- function(gene, force_refresh = FALSE) {
 #' @param gene HGNC gene symbol.
 #' @param force_refresh Redownload even if cached.
 #' @return A `data.frame` per spec; returns `NULL` on failure.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' head(get_revel("DEMO1"))
 #' @export
 get_revel <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "revel", force_refresh)
@@ -106,6 +142,13 @@ get_revel <- function(gene, force_refresh = FALSE) {
 #' @param gene HGNC gene symbol.
 #' @param force_refresh Redownload even if cached.
 #' @return A `data.frame` per spec; returns `NULL` on failure.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' head(get_cadd("DEMO1"))
 #' @export
 get_cadd <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "cadd", force_refresh)
@@ -119,6 +162,13 @@ get_cadd <- function(gene, force_refresh = FALSE) {
 #' @param gene HGNC gene symbol.
 #' @param force_refresh Redownload even if cached.
 #' @return A 1-row `data.frame`; returns `NULL` on failure.
+#' @examples
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
+#' )
+#' get_gene_meta("DEMO1")
 #' @export
 get_gene_meta <- function(gene, force_refresh = FALSE) {
   .fetch_slice(gene, "meta", force_refresh)

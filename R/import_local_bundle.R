@@ -31,15 +31,13 @@
 #' @return Invisibly, the destination path of the imported bundle.
 #'
 #' @examples
-#' \dontrun{
-#' import_local_bundle("/path/to/TP53.rds")
-#' import_local_bundle("/path/to/WDR31.rds")
-#' p <- plot_variant_overlay(
-#'   gene = "TP53",
-#'   aligned_fasta = "tp53_aligned.fasta",
-#'   variant_pos = 175
+#' ## Import the shipped synthetic DEMO1 bundle into a temporary cache.
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+#' import_local_bundle(
+#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'   gene = "DEMO1"
 #' )
-#' }
+#' fetch_gene_data("DEMO1")$meta
 #'
 #' @export
 import_local_bundle <- function(path, gene = NULL, overwrite = TRUE,

@@ -16,3 +16,10 @@ A `ScaleDiscrete` object.
 Provides a colourblind-safe 5-tier palette ordered from
 pathogenic (red) to benign (blue), with grey for VUS.
 }
+\examples{
+library(ggplot2)
+d <- data.frame(x = c("Pathogenic", "VUS", "Benign"), y = 1)
+ggplot(d, aes(x, y, fill = x)) +
+  geom_col() +
+  scale_fill_pathogenicity()
+}

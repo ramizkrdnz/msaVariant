@@ -9,6 +9,12 @@
 #'
 #' @param ... Passed to `ggplot2::scale_fill_manual()`.
 #' @return A `ScaleDiscrete` object.
+#' @examples
+#' library(ggplot2)
+#' d <- data.frame(x = c("Pathogenic", "VUS", "Benign"), y = 1)
+#' ggplot(d, aes(x, y, fill = x)) +
+#'   geom_col() +
+#'   scale_fill_pathogenicity()
 #' @export
 scale_fill_pathogenicity <- function(...) {
   ggplot2::scale_fill_manual(

@@ -59,10 +59,12 @@
 #'   \code{PM5}, \code{PP3}); \code{character(0)} if none fire.
 #'
 #' @examples
-#' \dontrun{
-#' b <- fetch_gene_data("TP53")
-#' compute_acmg_codes(b, 175, "R175H")
-#' }
+#' ## Runnable with the shipped synthetic DEMO1 bundle.
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' compute_acmg_codes(demo, variant_pos = 21, aa_change = "R21H")
+#'
+#' ## The PP3 threshold is tunable: 1 = any predictor, 3 = all three.
+#' compute_acmg_codes(demo, 30, "I30A", pp3_min_predictors = 3)
 #'
 #' @export
 compute_acmg_codes <- function(bundle, variant_pos, aa_change,

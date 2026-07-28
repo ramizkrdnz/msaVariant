@@ -37,3 +37,8 @@ A list of ggplot2 layers (or `NULL`).
 \description{
 CADD is licensed for non-commercial use only.
 }
+\examples{
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+layer <- geom_cadd(data = demo$cadd, msa = fa, ref_name = "DEMO1_HUMAN")
+}

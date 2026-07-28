@@ -43,3 +43,19 @@ Most users will not call this directly; the `get_domains()`,
 `get_clinvar()`, etc. helpers and the `geom_*()` layers route
 through it transparently.
 }
+\examples{
+## Runnable with the shipped synthetic DEMO1 bundle (no network).
+## A temporary cache keeps the example off your real cache directory.
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
+)
+b <- fetch_gene_data("DEMO1")
+names(b)
+
+\dontrun{
+## Real genes are downloaded from the Zenodo data deposit.
+b <- fetch_gene_data("TP53")
+}
+}

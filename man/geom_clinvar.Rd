@@ -35,3 +35,8 @@ Renders a discrete tick row showing ClinVar calls at each
 affected residue. Where multiple ClinVar entries exist at one
 residue, the most pathogenic call is shown.
 }
+\examples{
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+layer <- geom_clinvar(data = demo$clinvar, msa = fa, ref_name = "DEMO1_HUMAN")
+}

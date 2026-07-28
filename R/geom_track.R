@@ -47,21 +47,20 @@
 #' @param y_offset,track_height Vertical placement and height in
 #'   MSA-row units.
 #' @return A list of ggplot2 layers.
-#' @export
 #' @examples
-#' \dontrun{
-#' # Continuous: gnomAD allele frequencies from your own query
-#' my_af <- data.frame(pos = 510:530, af = runif(21, 0, 1e-3))
-#' geom_track(my_af, msa = fa, value = "af",
-#'            name = "gnomAD AF", type = "continuous")
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
 #'
-#' # Discrete: ClinVar calls from your own export
-#' my_cv <- data.frame(pos = c(498, 518),
-#'                     sig = c("Benign", "Pathogenic"))
-#' geom_track(my_cv, msa = fa, value = "sig", type = "discrete",
-#'            name = "ClinVar",
-#'            palette = c(Benign = "#4575B4", Pathogenic = "#D7301F"))
-#' }
+#' ## Continuous track from your own per-residue values.
+#' my_af <- data.frame(pos = 1:40, af = runif(40, 0, 1e-3))
+#' layer <- geom_track(my_af, msa = fa, value = "af",
+#'                     name = "gnomAD AF", type = "continuous")
+#'
+#' ## Discrete track from categorical calls.
+#' my_cv <- data.frame(pos = c(6, 21), sig = c("Benign", "Pathogenic"))
+#' layer <- geom_track(my_cv, msa = fa, value = "sig", type = "discrete",
+#'                     name = "ClinVar",
+#'                     palette = c(Benign = "#4575B4", Pathogenic = "#D7301F"))
+#' @export
 geom_track <- function(data,
                        msa,
                        ref_name     = NULL,

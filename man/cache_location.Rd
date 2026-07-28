@@ -12,3 +12,7 @@ The cache directory path (character).
 \description{
 Show the location of the msaVariant cache
 }
+\examples{
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+cache_location()
+}

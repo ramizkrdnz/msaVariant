@@ -30,3 +30,11 @@ Used internally by `fetch_gene_data()` after every cache hit or
 download. Also useful for the lab's build pipeline to validate
 files before uploading to Zenodo.
 }
+\examples{
+## The shipped DEMO1 bundle is spec-conformant.
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+validate_gene_data(demo)$valid
+
+## An empty template also validates.
+validate_gene_data(empty_gene_data("MYGENE"))$valid
+}

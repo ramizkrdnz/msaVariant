@@ -152,6 +152,13 @@
 #'   (logical) and `message` (character vector of issues, or NULL
 #'   if valid). If `strict = TRUE`: invisibly `TRUE` on success, or
 #'   `stop()` with a formatted message on failure.
+#' @examples
+#' ## The shipped DEMO1 bundle is spec-conformant.
+#' demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+#' validate_gene_data(demo)$valid
+#'
+#' ## An empty template also validates.
+#' validate_gene_data(empty_gene_data("MYGENE"))$valid
 #' @export
 validate_gene_data <- function(obj, strict = FALSE) {
   errs <- character(0)
@@ -253,6 +260,10 @@ validate_gene_data <- function(obj, strict = FALSE) {
 #' @param uniprot_id UniProt accession.
 #' @param protein_length Integer length.
 #' @return A list conforming to `DATA_FORMAT_SPEC.md`.
+#' @examples
+#' skeleton <- empty_gene_data("MYGENE", uniprot_id = "P00000",
+#'                             protein_length = 393L)
+#' lapply(skeleton, names)
 #' @export
 empty_gene_data <- function(gene = "UNKNOWN",
                             uniprot_id = NA_character_,

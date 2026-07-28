@@ -21,9 +21,9 @@ If no manifest is present (for example before any data has been
 downloaded or imported), an empty character vector is returned.
 }
 \examples{
-\dontrun{
+## Genes listed in the local MANIFEST.tsv (empty until one is present).
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 available_genes()
-}
 }
 \seealso{
 [fetch_gene_data()], [import_local_bundle()],

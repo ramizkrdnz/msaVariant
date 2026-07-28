@@ -56,14 +56,15 @@ or more clinical / population variants. Works with a tidy data
 frame; for VCF input use `read_vcf_variants()` first.
 }
 \examples{
+## The layer is built from a variant table; constructing it needs no ggmsa.
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+v  <- data.frame(pos = 21, label = "p.R21H", consequence = "missense")
+layer <- geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
+
 \dontrun{
+## Typical use: add it onto a ggmsa() alignment plot.
 library(ggmsa)
-fa <- system.file("extdata", "patl1_orthologs.fasta",
-                  package = "msaVariant")
-v  <- data.frame(pos = 518, pos_end = 577,
-                 label = "p.K518fs",
-                 consequence = "frameshift")
-ggmsa(fa, start = 500, end = 580) +
-  geom_variant(v, msa = fa, ref_name = "PATL1_HUMAN")
+ggmsa(fa, seq_name = TRUE) +
+  geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
 }
 }

@@ -25,6 +25,10 @@
 #'   For Shannon entropy the score is in nats, rescaled so 1 = fully
 #'   conserved and 0 = uniform across the observed alphabet. For
 #'   Jensen-Shannon, score is in [0, 1] with 1 = fully conserved.
+#' @examples
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' cons <- conservation_score(fa)
+#' head(cons)
 #' @export
 conservation_score <- function(msa,
                                method      = c("shannon", "js"),

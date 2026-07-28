@@ -108,11 +108,11 @@
 #'   no manifest is found.
 #' @seealso [fetch_gene_data()], [import_local_bundle()],
 #'   [cache_summary()]
-#' @export
 #' @examples
-#' \dontrun{
+#' ## Genes listed in the local MANIFEST.tsv (empty until one is present).
+#' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' available_genes()
-#' }
+#' @export
 available_genes <- function() {
   m <- .read_manifest()
   if (is.null(m)) return(character(0))

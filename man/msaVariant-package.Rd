@@ -39,18 +39,20 @@ that pull these databases on demand and cache results locally.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/ramizkrdnz/msaVariant}
-  \item \url{https://ramizkrdnz.github.io/msaVariant/}
-  \item Report bugs at \url{https://github.com/ramizkrdnz/msaVariant/issues}
+  \item \url{https://github.com/thekaplanlab/msaVariant}
+  \item \url{https://thekaplanlab.github.io/msaVariant/}
+  \item Report bugs at \url{https://github.com/thekaplanlab/msaVariant/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Your Name \email{you@example.org}
+\strong{Maintainer}: Ramiz Karadeniz \email{ramiz.karadeniz81@gmail.com} (\href{https://orcid.org/0009-0000-3290-4707}{ORCID})
 
 Authors:
 \itemize{
-  \item Your Name \email{you@example.org}
+  \item Ramiz Karadeniz \email{ramiz.karadeniz81@gmail.com} (\href{https://orcid.org/0009-0000-3290-4707}{ORCID})
+  \item Oktay I. Kaplan (\href{https://orcid.org/0000-0002-8733-0920}{ORCID})
+  \item Sebiha Cevik (\href{https://orcid.org/0000-0002-0935-1929}{ORCID})
 }
 
 Other contributors:

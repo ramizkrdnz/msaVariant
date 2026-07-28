@@ -37,3 +37,9 @@ A list of ggplot2 layers.
 Draws a horizontal track showing protein domain ranges with
 labels, mapped to MSA columns via the reference sequence.
 }
+\examples{
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+layer <- geom_domain(domains = demo$domains, msa = fa,
+                     ref_name = "DEMO1_HUMAN")
+}

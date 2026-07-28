@@ -23,6 +23,10 @@
 #'   default `NULL` uses the first sequence.
 #' @return A data.frame with columns `residue_pos`, `aa`, `msa_col`.
 #'   Gap columns in the reference are skipped.
+#' @examples
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' cmap <- build_msa_coord_map(fa, ref_name = "DEMO1_HUMAN")
+#' head(cmap)
 #' @export
 build_msa_coord_map <- function(msa, ref_name = NULL) {
   seqs <- .coerce_to_named_char(msa)
@@ -60,6 +64,9 @@ build_msa_coord_map <- function(msa, ref_name = NULL) {
 #' @param msa,ref_name See `build_msa_coord_map()`.
 #' @return Integer vector of MSA column indices (NA where mapping
 #'   fails).
+#' @examples
+#' fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+#' map_variant_to_msa(c(21, 30), fa, ref_name = "DEMO1_HUMAN")
 #' @export
 map_variant_to_msa <- function(positions, msa, ref_name = NULL) {
   m <- build_msa_coord_map(msa, ref_name)

@@ -19,3 +19,7 @@ Integer vector of MSA column indices (NA where mapping
 Thin wrapper around `build_msa_coord_map()` that vectorises the
 lookup and warns when a position is out of range.
 }
+\examples{
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+map_variant_to_msa(c(21, 30), fa, ref_name = "DEMO1_HUMAN")
+}
