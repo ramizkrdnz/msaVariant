@@ -40,3 +40,18 @@ A data.frame with columns \`msa_col\` and \`score\`. For Shannon entropy
 the score is in nats, rescaled so 1 = fully conserved and 0 = uniform
 across the observed alphabet. For Jensen-Shannon, score is in \[0, 1\]
 with 1 = fully conserved.
+
+## Examples
+
+``` r
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+cons <- conservation_score(fa)
+head(cons)
+#>   msa_col     score
+#> 1       1 1.0000000
+#> 2       2 0.8742310
+#> 3       3 1.0000000
+#> 4       4 0.7544434
+#> 5       5 0.8742310
+#> 6       6 0.8742310
+```

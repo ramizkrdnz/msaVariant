@@ -53,3 +53,26 @@ warning on failure.
 Most users will not call this directly; the \`get_domains()\`,
 \`get_clinvar()\`, etc. helpers and the \`geom\_\*()\` layers route
 through it transparently.
+
+## Examples
+
+``` r
+## Runnable with the shipped synthetic DEMO1 bundle (no network).
+## A temporary cache keeps the example off your real cache directory.
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
+)
+#> Cache directory does not exist yet (no annotations have been downloaded).
+#> Imported DEMO1 bundle -> /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c37341b32/0.1.0/DEMO1.rds
+b <- fetch_gene_data("DEMO1")
+names(b)
+#> [1] "meta"          "domains"       "clinvar"       "gnomad"       
+#> [5] "alphamissense" "revel"         "cadd"         
+
+if (FALSE) { # \dontrun{
+## Real genes are downloaded from the Zenodo data deposit.
+b <- fetch_gene_data("TP53")
+} # }
+```

@@ -16,9 +16,7 @@ compute_acmg_codes(bundle, variant_pos, aa_change, pp3_min_predictors = 2L)
 
   A gene bundle: a named list with elements `domains`, `clinvar`,
   `gnomad`, `alphamissense`, `revel`, `cadd` (as produced by
-  [`import_local_bundle`](https://ramizkrdnz.github.io/msaVariant/reference/import_local_bundle.md)
-  /
-  [`fetch_gene_data`](https://ramizkrdnz.github.io/msaVariant/reference/fetch_gene_data.md)).
+  \[import_local_bundle()\] / \[fetch_gene_data()\]).
 
 - variant_pos:
 
@@ -31,9 +29,9 @@ compute_acmg_codes(bundle, variant_pos, aa_change, pp3_min_predictors = 2L)
 
 - pp3_min_predictors:
 
-  Integer 1-3 (default 2). PP3 fires when at least this many of the
-  three PP3 predictors (AlphaMissense class == "likely_pathogenic",
-  REVEL \> 0.7, CADD phred \>= 25) pass their threshold.
+  Integer 1–3 (default 2). PP3 fires when at least this many of the
+  three PP3 predictors pass their threshold. `1` = any predictor, `2` =
+  majority (default), `3` = all three must agree.
 
 ## Value
 
@@ -52,7 +50,7 @@ Rules (all computed from the bundle; no external lookups):
 
 - PM1:
 
-  `variant_pos` falls within the start-end range of at least one
+  `variant_pos` falls within the start–end range of at least one
   `domains` row.
 
 - PM2:
@@ -62,21 +60,32 @@ Rules (all computed from the bundle; no external lookups):
 
 - PM5:
 
-  ClinVar has a record at the same position with a different alt residue
-  and significance `"Pathogenic"` or `"Likely_pathogenic"`.
+  ClinVar has a record at the same position with a *different* alt
+  residue and significance `"Pathogenic"` or `"Likely_pathogenic"`.
 
 - PP3:
 
-  Count how many of the three predictors pass — AlphaMissense
+  At this substitution, count how many of the three computational
+  predictors pass their threshold — AlphaMissense
   `am_class == "likely_pathogenic"`, REVEL `revel_score > 0.7`, CADD
-  `cadd_phred >= 25`; triggered when the count is at least
+  `cadd_phred >= 25`. Triggered when the passing count is at least
   `pp3_min_predictors`.
+
+Codes whose evaluation requires the alternate allele (PS1, PM2, PM5,
+PP3) are only evaluated when `aa_change` parses to a full ref+pos+alt
+substitution (e.g. `"R175H"`). PM1 depends only on position and is
+always evaluated. This keeps the function safe when called with a
+position-only label (it simply won't over-fire PM2).
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-b <- fetch_gene_data("TP53")
-compute_acmg_codes(b, 175, "R175H")
-} # }
+## Runnable with the shipped synthetic DEMO1 bundle.
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+compute_acmg_codes(demo, variant_pos = 21, aa_change = "R21H")
+#> [1] "PS1" "PM1" "PM2" "PM5" "PP3"
+
+## The PP3 threshold is tunable: 1 = any predictor, 3 = all three.
+compute_acmg_codes(demo, 30, "I30A", pp3_min_predictors = 3)
+#> [1] "PM1"
 ```

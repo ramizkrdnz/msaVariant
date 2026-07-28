@@ -49,3 +49,12 @@ A list of ggplot2 layers (or \`NULL\`).
 ## Details
 
 Note: AlphaMissense is licensed CC-BY-NC-SA 4.0.
+
+## Examples
+
+``` r
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+layer <- geom_alphamissense(data = demo$alphamissense, msa = fa,
+                            ref_name = "DEMO1_HUMAN")
+```

@@ -18,3 +18,13 @@ scale_fill_pathogenicity(...)
 ## Value
 
 A \`ScaleDiscrete\` object.
+
+## Examples
+
+``` r
+library(ggplot2)
+d <- data.frame(x = c("Pathogenic", "VUS", "Benign"), y = 1)
+ggplot(d, aes(x, y, fill = x)) +
+  geom_col() +
+  scale_fill_pathogenicity()
+```

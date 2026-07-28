@@ -31,3 +31,37 @@ empty_gene_data(
 ## Value
 
 A list conforming to \`DATA_FORMAT_SPEC.md\`.
+
+## Examples
+
+``` r
+skeleton <- empty_gene_data("MYGENE", uniprot_id = "P00000",
+                            protein_length = 393L)
+lapply(skeleton, names)
+#> $meta
+#> [1] "gene"                  "uniprot_id"            "protein_length"       
+#> [4] "ensembl_gene_id"       "ensembl_transcript_id" "build_date"           
+#> [7] "source_versions"      
+#> 
+#> $domains
+#> [1] "start"     "end"       "name"      "accession" "source"   
+#> 
+#> $clinvar
+#> [1] "pos"           "aa_ref"        "aa_alt"        "aa_change"    
+#> [5] "significance"  "review_status" "clinvar_id"   
+#> 
+#> $gnomad
+#> [1] "pos"         "aa_ref"      "aa_alt"      "aa_change"   "consequence"
+#> [6] "af_joint"    "ac_joint"    "an_joint"    "filter"     
+#> 
+#> $alphamissense
+#> [1] "pos"       "aa_ref"    "aa_alt"    "aa_change" "am_score"  "am_class" 
+#> 
+#> $revel
+#> [1] "pos"         "aa_ref"      "aa_alt"      "aa_change"   "revel_score"
+#> 
+#> $cadd
+#> [1] "pos"         "aa_ref"      "aa_alt"      "aa_change"   "consequence"
+#> [6] "cadd_raw"    "cadd_phred" 
+#> 
+```

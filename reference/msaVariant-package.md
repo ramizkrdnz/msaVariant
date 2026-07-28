@@ -33,19 +33,25 @@ demand and cache results locally.
 
 Useful links:
 
-- <https://github.com/ramizkrdnz/msaVariant>
+- <https://github.com/thekaplanlab/msaVariant>
 
-- <https://ramizkrdnz.github.io/msaVariant/>
+- <https://thekaplanlab.github.io/msaVariant/>
 
-- Report bugs at <https://github.com/ramizkrdnz/msaVariant/issues>
+- Report bugs at <https://github.com/thekaplanlab/msaVariant/issues>
 
 ## Author
 
-**Maintainer**: Your Name <you@example.org>
+**Maintainer**: Ramiz Karadeniz <ramiz.karadeniz81@gmail.com>
+([ORCID](https://orcid.org/0009-0000-3290-4707))
 
 Authors:
 
-- Your Name <you@example.org>
+- Ramiz Karadeniz <ramiz.karadeniz81@gmail.com>
+  ([ORCID](https://orcid.org/0009-0000-3290-4707))
+
+- Oktay I. Kaplan ([ORCID](https://orcid.org/0000-0002-8733-0920))
+
+- Sebiha Cevik ([ORCID](https://orcid.org/0000-0002-0935-1929))
 
 Other contributors:
 

@@ -71,6 +71,25 @@ indicates more likely pathogenic.</p>
     <p>A `data.frame` per spec; returns `NULL` on failure.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MSAVARIANT_CACHE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"msaVariant_cache_"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  gene <span class="op">=</span> <span class="st">"DEMO1"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cache directory does not exist yet (no annotations have been downloaded).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Imported DEMO1 bundle -&gt; /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c75c08201/0.1.0/DEMO1.rds</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">get_revel</span><span class="op">(</span><span class="st">"DEMO1"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pos aa_ref aa_alt aa_change revel_score</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1      M      A       M1A      0.8868</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   2      K      A       K2A      0.1363</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   3      T      A       T3A      0.7853</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   4      A      G       A4G      0.4533</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   5      Y      A       Y5A      0.1357</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   6      I      A       I6A      0.8852</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

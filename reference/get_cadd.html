@@ -75,6 +75,25 @@ Higher = more deleterious; PHRED 20 ~ top 1<!-- % deleterious. --></p>
     <p>Note: CADD is licensed for **non-commercial use only**.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MSAVARIANT_CACHE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"msaVariant_cache_"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  gene <span class="op">=</span> <span class="st">"DEMO1"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Cache directory does not exist yet (no annotations have been downloaded).</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Imported DEMO1 bundle -&gt; /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c34645e66/0.1.0/DEMO1.rds</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">get_cadd</span><span class="op">(</span><span class="st">"DEMO1"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pos aa_ref aa_alt aa_change consequence cadd_raw cadd_phred</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1      M      A       M1A    missense    1.535      12.28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   2      K      A       K2A    missense    0.539       4.31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   3      T      A       T3A    missense    4.897      39.17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   4      A      G       A4G    missense    2.485      19.88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   5      Y      A       Y5A    missense    0.465       3.72</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   6      I      A       I6A    missense    1.059       8.47</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

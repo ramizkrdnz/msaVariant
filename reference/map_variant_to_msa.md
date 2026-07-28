@@ -22,3 +22,11 @@ map_variant_to_msa(positions, msa, ref_name = NULL)
 ## Value
 
 Integer vector of MSA column indices (NA where mapping fails).
+
+## Examples
+
+``` r
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+map_variant_to_msa(c(21, 30), fa, ref_name = "DEMO1_HUMAN")
+#> [1] 21 30
+```

@@ -43,3 +43,11 @@ geom_revel(
 ## Value
 
 A list of ggplot2 layers (or \`NULL\`).
+
+## Examples
+
+``` r
+demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+layer <- geom_revel(data = demo$revel, msa = fa, ref_name = "DEMO1_HUMAN")
+```

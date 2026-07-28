@@ -82,6 +82,39 @@ template when writing custom annotation files or as a fallback.</p>
     <p>A list conforming to `DATA_FORMAT_SPEC.md`.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">skeleton</span> <span class="op">&lt;-</span> <span class="fu">empty_gene_data</span><span class="op">(</span><span class="st">"MYGENE"</span>, uniprot_id <span class="op">=</span> <span class="st">"P00000"</span>,</span></span>
+<span class="r-in"><span>                            protein_length <span class="op">=</span> <span class="fl">393L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">skeleton</span>, <span class="va">names</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $meta</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "gene"                  "uniprot_id"            "protein_length"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "ensembl_gene_id"       "ensembl_transcript_id" "build_date"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "source_versions"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $domains</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "start"     "end"       "name"      "accession" "source"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $clinvar</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pos"           "aa_ref"        "aa_alt"        "aa_change"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "significance"  "review_status" "clinvar_id"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $gnomad</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pos"         "aa_ref"      "aa_alt"      "aa_change"   "consequence"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "af_joint"    "ac_joint"    "an_joint"    "filter"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $alphamissense</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pos"       "aa_ref"    "aa_alt"    "aa_change" "am_score"  "am_class" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $revel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pos"         "aa_ref"      "aa_alt"      "aa_change"   "revel_score"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $cadd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pos"         "aa_ref"      "aa_alt"      "aa_change"   "consequence"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "cadd_raw"    "cadd_phred" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -24,12 +24,10 @@ for. The workflow generalises to any single-protein investigation.
 ## Step 1 — Install the alignment software
 
 `msaVariant` does not perform alignment itself. Choose any mainstream
-protein-MSA tool; we recommend `msa` (Bioconductor, ships
-MUSCLE/ClustalW/ClustalOmega) because it stays inside R. Install it once
-in your R console (shown here for reference, not run by this vignette):
-
-    if (!require("BiocManager")) install.packages("BiocManager")
-    BiocManager::install("msa")
+protein-MSA tool; we recommend the `msa` Bioconductor package (it ships
+MUSCLE/ClustalW/ClustalOmega and stays inside R). Install it once from
+Bioconductor by following the one-line command on its landing page,
+[bioconductor.org/packages/msa](https://bioconductor.org/packages/msa).
 
 Standalone alternatives (run from the shell, then load with
 [`Biostrings::readAAMultipleAlignment`](https://rdrr.io/pkg/Biostrings/man/MultipleAlignment-class.html)):

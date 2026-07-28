@@ -49,13 +49,19 @@ Invisibly, the destination path of the imported bundle.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-import_local_bundle("/path/to/TP53.rds")
-import_local_bundle("/path/to/WDR31.rds")
-p <- plot_variant_overlay(
-  gene = "TP53",
-  aligned_fasta = "tp53_aligned.fasta",
-  variant_pos = 175
+## Import the shipped synthetic DEMO1 bundle into a temporary cache.
+Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
+import_local_bundle(
+  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+  gene = "DEMO1"
 )
-} # }
+#> Cache directory does not exist yet (no annotations have been downloaded).
+#> Imported DEMO1 bundle -> /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c3d39973c/0.1.0/DEMO1.rds
+fetch_gene_data("DEMO1")$meta
+#>    gene uniprot_id protein_length     ensembl_gene_id ensembl_transcript_id
+#> 1 DEMO1  DEMO00001             40 ENSGDEMO00000000001   ENSTDEMO00000000001
+#>   refseq_protein   mane_select build_date
+#> 1  NP_DEMO0001.1 NM_DEMO0001.1 2026-07-08
+#>                                                             source_versions
+#> 1 SYNTHETIC — illustrative only, not real AlphaMissense/CADD/ClinVar/gnomAD
 ```

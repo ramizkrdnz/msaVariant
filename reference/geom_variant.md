@@ -69,14 +69,15 @@ A ggplot2 layer (or list of layers) that can be \`+\`-ed onto a
 ## Examples
 
 ``` r
+## The layer is built from a variant table; constructing it needs no ggmsa.
+fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
+v  <- data.frame(pos = 21, label = "p.R21H", consequence = "missense")
+layer <- geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
+
 if (FALSE) { # \dontrun{
+## Typical use: add it onto a ggmsa() alignment plot.
 library(ggmsa)
-fa <- system.file("extdata", "patl1_orthologs.fasta",
-                  package = "msaVariant")
-v  <- data.frame(pos = 518, pos_end = 577,
-                 label = "p.K518fs",
-                 consequence = "frameshift")
-ggmsa(fa, start = 500, end = 580) +
-  geom_variant(v, msa = fa, ref_name = "PATL1_HUMAN")
+ggmsa(fa, seq_name = TRUE) +
+  geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
 } # }
 ```
