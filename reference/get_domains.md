@@ -30,11 +30,11 @@ A \`data.frame\` with columns \`start\`, \`end\`, \`name\`,
 ## Runnable with the shipped synthetic DEMO1 bundle (no network).
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
-  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-  gene = "DEMO1"
+    system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+    gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c5ea99fc5/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/Rtmp9JzdHU/msaVariant_cache_1a733468ecda/0.1.0/DEMO1.rds
 get_domains("DEMO1")
 #>   start end                   name  accession   source
 #> 1     5  35 Demo functional domain PFDEMO0001     Pfam

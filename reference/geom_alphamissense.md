@@ -55,6 +55,8 @@ Note: AlphaMissense is licensed CC-BY-NC-SA 4.0.
 ``` r
 demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
 fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
-layer <- geom_alphamissense(data = demo$alphamissense, msa = fa,
-                            ref_name = "DEMO1_HUMAN")
+layer <- geom_alphamissense(
+    data = demo$alphamissense, msa = fa,
+    ref_name = "DEMO1_HUMAN"
+)
 ```

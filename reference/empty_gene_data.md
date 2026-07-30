@@ -35,8 +35,10 @@ A list conforming to \`DATA_FORMAT_SPEC.md\`.
 ## Examples
 
 ``` r
-skeleton <- empty_gene_data("MYGENE", uniprot_id = "P00000",
-                            protein_length = 393L)
+skeleton <- empty_gene_data("MYGENE",
+    uniprot_id = "P00000",
+    protein_length = 393L
+)
 lapply(skeleton, names)
 #> $meta
 #> [1] "gene"                  "uniprot_id"            "protein_length"       

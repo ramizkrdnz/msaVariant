@@ -131,7 +131,7 @@ that has no Zenodo deposit.
 path <- system.file("extdata", "DEMO1.rds", package = "msaVariant")
 import_local_bundle(path, gene = "DEMO1")
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpaR7StD/msaVariant_cache_1d5a55e5217a/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpFbu5zP/msaVariant_cache_1dc44cffd2cf/0.1.0/DEMO1.rds
 ```
 
 The file is validated, then copied into the cache
@@ -287,10 +287,10 @@ is a false PM2, and you should read the strip accordingly.
 ``` r
 
 cache_location()
-#> [1] "/tmp/RtmpaR7StD/msaVariant_cache_1d5a55e5217a"
+#> [1] "/tmp/RtmpFbu5zP/msaVariant_cache_1dc44cffd2cf"
 cache_summary()
 #>    gene size_kb  cached_on
-#> 1 DEMO1     3.1 2026-07-28
+#> 1 DEMO1     3.1 2026-07-30
 ```
 
 ``` r

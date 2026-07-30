@@ -28,11 +28,11 @@ A \`data.frame\` per spec; returns \`NULL\` on failure.
 ``` r
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
-  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-  gene = "DEMO1"
+    system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+    gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c75c08201/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/Rtmp9JzdHU/msaVariant_cache_1a732e6c1d18/0.1.0/DEMO1.rds
 head(get_revel("DEMO1"))
 #>   pos aa_ref aa_alt aa_change revel_score
 #> 1   1      M      A       M1A      0.8868

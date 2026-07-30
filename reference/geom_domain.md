@@ -53,6 +53,8 @@ A list of ggplot2 layers.
 ``` r
 demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
 fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
-layer <- geom_domain(domains = demo$domains, msa = fa,
-                     ref_name = "DEMO1_HUMAN")
+layer <- geom_domain(
+    domains = demo$domains, msa = fa,
+    ref_name = "DEMO1_HUMAN"
+)
 ```

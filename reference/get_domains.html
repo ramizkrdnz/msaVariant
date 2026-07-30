@@ -75,11 +75,11 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Runnable with the shipped synthetic DEMO1 bundle (no network).</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MSAVARIANT_CACHE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"msaVariant_cache_"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="import_local_bundle.html">import_local_bundle</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  gene <span class="op">=</span> <span class="st">"DEMO1"</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"DEMO1.rds"</span>, package <span class="op">=</span> <span class="st">"msaVariant"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    gene <span class="op">=</span> <span class="st">"DEMO1"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Cache directory does not exist yet (no annotations have been downloaded).</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Imported DEMO1 bundle -&gt; /tmp/RtmpUwZ6Qa/msaVariant_cache_1a0c5ea99fc5/0.1.0/DEMO1.rds</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Imported DEMO1 bundle -&gt; /tmp/Rtmp9JzdHU/msaVariant_cache_1a733468ecda/0.1.0/DEMO1.rds</span>
 <span class="r-in"><span><span class="fu">get_domains</span><span class="op">(</span><span class="st">"DEMO1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   start end                   name  accession   source</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     5  35 Demo functional domain PFDEMO0001     Pfam</span>
