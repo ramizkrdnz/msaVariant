@@ -23,8 +23,8 @@ Returns the `domains` slice of the per-gene Zenodo bundle.
 ## Runnable with the shipped synthetic DEMO1 bundle (no network).
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
-  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-  gene = "DEMO1"
+    system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+    gene = "DEMO1"
 )
 get_domains("DEMO1")
 }

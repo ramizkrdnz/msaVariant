@@ -58,13 +58,13 @@ frame; for VCF input use `read_vcf_variants()` first.
 \examples{
 ## The layer is built from a variant table; constructing it needs no ggmsa.
 fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
-v  <- data.frame(pos = 21, label = "p.R21H", consequence = "missense")
+v <- data.frame(pos = 21, label = "p.R21H", consequence = "missense")
 layer <- geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
 
 \dontrun{
 ## Typical use: add it onto a ggmsa() alignment plot.
 library(ggmsa)
 ggmsa(fa, seq_name = TRUE) +
-  geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
+    geom_variant(v, msa = fa, ref_name = "DEMO1_HUMAN")
 }
 }

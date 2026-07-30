@@ -38,6 +38,6 @@
 ## are ggplot2 `aes()` mappings and the rlang `.data` pronoun, referenced
 ## as bare symbols rather than defined as top-level bindings.
 utils::globalVariables(c(
-  ".data", "msa_col", "seq_name", "residue", "x", "y",
-  "code", "txt", "name", "msa_start", "msa_end"
+    ".data", "msa_col", "seq_name", "residue", "x", "y",
+    "code", "txt", "name", "msa_start", "msa_end"
 ))

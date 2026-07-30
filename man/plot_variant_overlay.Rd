@@ -117,21 +117,23 @@ aligned FASTA, and the variant position.
 ## cache so the example does not touch your real cache directory.
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
-  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-  gene = "DEMO1"
+    system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+    gene = "DEMO1"
 )
 p <- plot_variant_overlay(
-  gene          = "DEMO1",
-  aligned_fasta = system.file("extdata", "demo_aligned.fasta",
-                              package = "msaVariant"),
-  variant_pos   = 21,
-  variant_label = "p.R21H"
+    gene = "DEMO1",
+    aligned_fasta = system.file("extdata", "demo_aligned.fasta",
+        package = "msaVariant"
+    ),
+    variant_pos = 21,
+    variant_label = "p.R21H"
 )
 
 \dontrun{
 ## Save a publication-resolution figure
 ggplot2::ggsave("demo1_R21H.png", p,
-                width = 15, height = 9, dpi = 300, bg = "white")
+    width = 15, height = 9, dpi = 300, bg = "white"
+)
 }
 
 }

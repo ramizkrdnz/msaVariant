@@ -31,36 +31,40 @@
 #' head(cons)
 #' @export
 conservation_score <- function(msa,
-                               method      = c("shannon", "js"),
-                               background  = NULL,
+                               method = c("shannon", "js"),
+                               background = NULL,
                                ignore_gaps = TRUE) {
-  method <- match.arg(method)
-  seqs   <- .coerce_to_named_char(msa)
+    method <- match.arg(method)
+    seqs <- .coerce_to_named_char(msa)
 
-  mat <- do.call(rbind, strsplit(seqs, "", fixed = TRUE))
-  if (length(unique(nchar(seqs))) != 1L) {
-    rlang::abort("Sequences in MSA are not equal length.")
-  }
+    mat <- do.call(rbind, strsplit(seqs, "", fixed = TRUE))
+    if (length(unique(nchar(seqs))) != 1L) {
+        rlang::abort("Sequences in MSA are not equal length.")
+    }
 
-  ncol_msa <- ncol(mat)
-  score <- numeric(ncol_msa)
+    ncol_msa <- ncol(mat)
+    score <- numeric(ncol_msa)
 
-  for (j in seq_len(ncol_msa)) {
-    col <- mat[, j]
-    if (ignore_gaps) col <- col[!col %in% c("-", ".", "*")]
-    if (length(col) == 0L) { score[j] <- NA_real_; next }
+    for (j in seq_len(ncol_msa)) {
+        col <- mat[, j]
+        if (ignore_gaps) col <- col[!col %in% c("-", ".", "*")]
+        if (length(col) == 0L) {
+            score[j] <- NA_real_
+            next
+        }
 
-    freq <- table(col) / length(col)
-    score[j] <- switch(
-      method,
-      shannon = .shannon_conservation(freq),
-      js      = .js_conservation(freq, background)
+        freq <- table(col) / length(col)
+        score[j] <- switch(method,
+            shannon = .shannon_conservation(freq),
+            js      = .js_conservation(freq, background)
+        )
+    }
+
+    data.frame(
+        msa_col = seq_len(ncol_msa),
+        score = score,
+        stringsAsFactors = FALSE
     )
-  }
-
-  data.frame(msa_col = seq_len(ncol_msa),
-             score   = score,
-             stringsAsFactors = FALSE)
 }
 
 # Shannon entropy converted to a conservation score in [0, 1].
@@ -70,35 +74,39 @@ conservation_score <- function(msa,
 # still score as highly conserved. Detection is heuristic from the
 # observed residues; user can override with `alphabet_size`.
 .shannon_conservation <- function(freq, alphabet_size = NULL) {
-  if (length(freq) <= 1L) return(1.0)
-  if (is.null(alphabet_size)) {
-    aa_set <- c("A","C","D","E","F","G","H","I","K","L",
-                "M","N","P","Q","R","S","T","V","W","Y")
-    is_protein <- all(names(freq) %in% c(aa_set, "X", "B", "Z", "U", "O"))
-    alphabet_size <- if (is_protein) 20L else 4L
-  }
-  H     <- -sum(freq * log(freq))
-  H_max <- log(alphabet_size)
-  max(0, 1.0 - H / H_max)
+    if (length(freq) <= 1L) {
+        return(1.0)
+    }
+    if (is.null(alphabet_size)) {
+        aa_set <- c(
+            "A", "C", "D", "E", "F", "G", "H", "I", "K", "L",
+            "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y"
+        )
+        is_protein <- all(names(freq) %in% c(aa_set, "X", "B", "Z", "U", "O"))
+        alphabet_size <- if (is_protein) 20L else 4L
+    }
+    H <- -sum(freq * log(freq))
+    H_max <- log(alphabet_size)
+    max(0, 1.0 - H / H_max)
 }
 
 # Jensen-Shannon divergence against a background distribution,
 # normalised to [0, 1].
 .js_conservation <- function(freq, background = NULL) {
-  alphabet <- names(freq)
-  if (is.null(background)) {
-    background <- rep(1 / length(alphabet), length(alphabet))
-    names(background) <- alphabet
-  } else {
-    background <- background[alphabet]
-    background[is.na(background)] <- 1e-9
-    background <- background / sum(background)
-  }
-  p <- as.numeric(freq)
-  q <- as.numeric(background)
-  m <- 0.5 * (p + q)
-  kl <- function(a, b) sum(ifelse(a > 0, a * log2(a / b), 0))
-  js <- 0.5 * kl(p, m) + 0.5 * kl(q, m)
-  # JS in [0, 1] with log2 base when comparing two distributions
-  js
+    alphabet <- names(freq)
+    if (is.null(background)) {
+        background <- rep(1 / length(alphabet), length(alphabet))
+        names(background) <- alphabet
+    } else {
+        background <- background[alphabet]
+        background[is.na(background)] <- 1e-9
+        background <- background / sum(background)
+    }
+    p <- as.numeric(freq)
+    q <- as.numeric(background)
+    m <- 0.5 * (p + q)
+    kl <- function(a, b) sum(ifelse(a > 0, a * log2(a / b), 0))
+    js <- 0.5 * kl(p, m) + 0.5 * kl(q, m)
+    # JS in [0, 1] with log2 base when comparing two distributions
+    js
 }

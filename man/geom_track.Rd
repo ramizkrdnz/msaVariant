@@ -64,12 +64,16 @@ fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
 
 ## Continuous track from your own per-residue values.
 my_af <- data.frame(pos = 1:40, af = runif(40, 0, 1e-3))
-layer <- geom_track(my_af, msa = fa, value = "af",
-                    name = "gnomAD AF", type = "continuous")
+layer <- geom_track(my_af,
+    msa = fa, value = "af",
+    name = "gnomAD AF", type = "continuous"
+)
 
 ## Discrete track from categorical calls.
 my_cv <- data.frame(pos = c(6, 21), sig = c("Benign", "Pathogenic"))
-layer <- geom_track(my_cv, msa = fa, value = "sig", type = "discrete",
-                    name = "ClinVar",
-                    palette = c(Benign = "#4575B4", Pathogenic = "#D7301F"))
+layer <- geom_track(my_cv,
+    msa = fa, value = "sig", type = "discrete",
+    name = "ClinVar",
+    palette = c(Benign = "#4575B4", Pathogenic = "#D7301F")
+)
 }

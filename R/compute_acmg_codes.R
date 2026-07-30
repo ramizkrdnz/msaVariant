@@ -69,126 +69,131 @@
 #' @export
 compute_acmg_codes <- function(bundle, variant_pos, aa_change,
                                pp3_min_predictors = 2L) {
-  variant_pos <- as.integer(variant_pos)
-  pp3_min_predictors <- as.integer(pp3_min_predictors)
-  if (is.na(pp3_min_predictors) || pp3_min_predictors < 1L)
-    pp3_min_predictors <- 1L
-  if (pp3_min_predictors > 3L) pp3_min_predictors <- 3L
-
-  ## --- Parse aa_change into ref / pos / alt --------------------------
-  parsed <- .acmg_parse_aa_change(aa_change)
-  ## If aa_change encodes a position, prefer the explicit variant_pos
-  ## but fall back to the parsed one when variant_pos is missing.
-  if (is.na(variant_pos) && !is.na(parsed$pos)) variant_pos <- parsed$pos
-  has_alt <- !is.na(parsed$alt) && nzchar(parsed$alt)
-
-  ## Canonical aa_change string used for exact matching. Prefer the
-  ## caller's string (stripped of the "p." prefix); if only pos/alt are
-  ## known, reconstruct it.
-  aac <- sub("^p\\.", "", as.character(aa_change))
-
-  triggered <- character(0)
-
-  ## Small helpers -----------------------------------------------------
-  nonempty <- function(df) !is.null(df) && is.data.frame(df) && nrow(df) > 0L
-  has_cols <- function(df, cols) all(cols %in% names(df))
-  chr <- function(x) as.character(x)
-
-  ## --- PS1: exact same aa_change, ClinVar Pathogenic -----------------
-  if (has_alt) {
-    cv <- bundle$clinvar
-    if (nonempty(cv) && has_cols(cv, c("aa_change", "significance"))) {
-      hit <- chr(cv$aa_change) == aac & chr(cv$significance) == "Pathogenic"
-      if (any(hit, na.rm = TRUE)) triggered <- c(triggered, "PS1")
+    variant_pos <- as.integer(variant_pos)
+    pp3_min_predictors <- as.integer(pp3_min_predictors)
+    if (is.na(pp3_min_predictors) || pp3_min_predictors < 1L) {
+        pp3_min_predictors <- 1L
     }
-  }
+    if (pp3_min_predictors > 3L) pp3_min_predictors <- 3L
 
-  ## --- PM1: variant position within a domain range -------------------
-  dom <- bundle$domains
-  if (nonempty(dom) && has_cols(dom, c("start", "end")) && !is.na(variant_pos)) {
-    in_dom <- dom$start <= variant_pos & dom$end >= variant_pos
-    if (any(in_dom, na.rm = TRUE)) triggered <- c(triggered, "PM1")
-  }
+    ## --- Parse aa_change into ref / pos / alt --------------------------
+    parsed <- .acmg_parse_aa_change(aa_change)
+    ## If aa_change encodes a position, prefer the explicit variant_pos
+    ## but fall back to the parsed one when variant_pos is missing.
+    if (is.na(variant_pos) && !is.na(parsed$pos)) variant_pos <- parsed$pos
+    has_alt <- !is.na(parsed$alt) && nzchar(parsed$alt)
 
-  ## --- PM2: absent from gnomAD OR af_joint < 1e-4 --------------------
-  if (has_alt) {
-    gn <- bundle$gnomad
-    if (nonempty(gn) && has_cols(gn, c("aa_change", "af_joint"))) {
-      rows <- gn[chr(gn$aa_change) == aac, , drop = FALSE]
-      if (nrow(rows) == 0L) {
-        triggered <- c(triggered, "PM2")                 # absent
-      } else if (any(rows$af_joint < 1e-4, na.rm = TRUE)) {
-        triggered <- c(triggered, "PM2")                 # rare
-      }
-    } else {
-      ## No gnomAD table at all -> the variant is absent from gnomAD.
-      triggered <- c(triggered, "PM2")
+    ## Canonical aa_change string used for exact matching. Prefer the
+    ## caller's string (stripped of the "p." prefix); if only pos/alt are
+    ## known, reconstruct it.
+    aac <- sub("^p\\.", "", as.character(aa_change))
+
+    triggered <- character(0)
+
+    ## Small helpers -----------------------------------------------------
+    nonempty <- function(df) !is.null(df) && is.data.frame(df) && nrow(df) > 0L
+    has_cols <- function(df, cols) all(cols %in% names(df))
+    chr <- function(x) as.character(x)
+
+    ## --- PS1: exact same aa_change, ClinVar Pathogenic -----------------
+    if (has_alt) {
+        cv <- bundle$clinvar
+        if (nonempty(cv) && has_cols(cv, c("aa_change", "significance"))) {
+            hit <- chr(cv$aa_change) == aac & chr(cv$significance) == "Pathogenic"
+            if (any(hit, na.rm = TRUE)) triggered <- c(triggered, "PS1")
+        }
     }
-  }
 
-  ## --- PM5: same pos, different alt, ClinVar (Likely_)pathogenic -----
-  if (has_alt) {
-    cv <- bundle$clinvar
-    if (nonempty(cv) && has_cols(cv, c("pos", "aa_alt", "significance")) &&
-        !is.na(variant_pos)) {
-      hit <- cv$pos == variant_pos &
-             chr(cv$aa_alt) != parsed$alt &
-             chr(cv$significance) %in% c("Pathogenic", "Likely_pathogenic")
-      if (any(hit, na.rm = TRUE)) triggered <- c(triggered, "PM5")
+    ## --- PM1: variant position within a domain range -------------------
+    dom <- bundle$domains
+    if (nonempty(dom) && has_cols(dom, c("start", "end")) && !is.na(variant_pos)) {
+        in_dom <- dom$start <= variant_pos & dom$end >= variant_pos
+        if (any(in_dom, na.rm = TRUE)) triggered <- c(triggered, "PM1")
     }
-  }
 
-  ## --- PP3: count deleterious predictors, trigger on >= threshold ---
-  ## Predictors: AlphaMissense class == "likely_pathogenic",
-  ## REVEL > 0.7, CADD phred >= 25. PP3 fires when at least
-  ## pp3_min_predictors of them pass.
-  if (has_alt) {
-    am <- bundle$alphamissense
-    rv <- bundle$revel
-    cd <- bundle$cadd
+    ## --- PM2: absent from gnomAD OR af_joint < 1e-4 --------------------
+    if (has_alt) {
+        gn <- bundle$gnomad
+        if (nonempty(gn) && has_cols(gn, c("aa_change", "af_joint"))) {
+            rows <- gn[chr(gn$aa_change) == aac, , drop = FALSE]
+            if (nrow(rows) == 0L) {
+                triggered <- c(triggered, "PM2") # absent
+            } else if (any(rows$af_joint < 1e-4, na.rm = TRUE)) {
+                triggered <- c(triggered, "PM2") # rare
+            }
+        } else {
+            ## No gnomAD table at all -> the variant is absent from gnomAD.
+            triggered <- c(triggered, "PM2")
+        }
+    }
 
-    am_ok <- nonempty(am) && has_cols(am, c("aa_change", "am_class")) &&
-      any(chr(am$aa_change) == aac &
-          chr(am$am_class) == "likely_pathogenic", na.rm = TRUE)
+    ## --- PM5: same pos, different alt, ClinVar (Likely_)pathogenic -----
+    if (has_alt) {
+        cv <- bundle$clinvar
+        if (nonempty(cv) && has_cols(cv, c("pos", "aa_alt", "significance")) &&
+            !is.na(variant_pos)) {
+            hit <- cv$pos == variant_pos &
+                chr(cv$aa_alt) != parsed$alt &
+                chr(cv$significance) %in% c("Pathogenic", "Likely_pathogenic")
+            if (any(hit, na.rm = TRUE)) triggered <- c(triggered, "PM5")
+        }
+    }
 
-    revel_ok <- nonempty(rv) && has_cols(rv, c("aa_change", "revel_score")) &&
-      any(chr(rv$aa_change) == aac & rv$revel_score > 0.7, na.rm = TRUE)
+    ## --- PP3: count deleterious predictors, trigger on >= threshold ---
+    ## Predictors: AlphaMissense class == "likely_pathogenic",
+    ## REVEL > 0.7, CADD phred >= 25. PP3 fires when at least
+    ## pp3_min_predictors of them pass.
+    if (has_alt) {
+        am <- bundle$alphamissense
+        rv <- bundle$revel
+        cd <- bundle$cadd
 
-    cadd_ok <- nonempty(cd) && has_cols(cd, c("aa_change", "cadd_phred")) &&
-      any(chr(cd$aa_change) == aac & cd$cadd_phred >= 25, na.rm = TRUE)
+        am_ok <- nonempty(am) && has_cols(am, c("aa_change", "am_class")) &&
+            any(chr(am$aa_change) == aac &
+                chr(am$am_class) == "likely_pathogenic", na.rm = TRUE)
 
-    pp3_pass <- sum(c(am_ok, revel_ok, cadd_ok))
-    if (pp3_pass >= pp3_min_predictors) triggered <- c(triggered, "PP3")
-  }
+        revel_ok <- nonempty(rv) && has_cols(rv, c("aa_change", "revel_score")) &&
+            any(chr(rv$aa_change) == aac & rv$revel_score > 0.7, na.rm = TRUE)
 
-  ## --- Return in canonical strength order ---------------------------
-  order_ref <- c("PS1", "PM1", "PM2", "PM5", "PP3")
-  triggered <- order_ref[order_ref %in% triggered]
-  triggered
+        cadd_ok <- nonempty(cd) && has_cols(cd, c("aa_change", "cadd_phred")) &&
+            any(chr(cd$aa_change) == aac & cd$cadd_phred >= 25, na.rm = TRUE)
+
+        pp3_pass <- sum(c(am_ok, revel_ok, cadd_ok))
+        if (pp3_pass >= pp3_min_predictors) triggered <- c(triggered, "PP3")
+    }
+
+    ## --- Return in canonical strength order ---------------------------
+    order_ref <- c("PS1", "PM1", "PM2", "PM5", "PP3")
+    triggered <- order_ref[order_ref %in% triggered]
+    triggered
 }
 
 ## Internal: parse "p.R175H" / "R175H" -> list(ref, pos, alt).
 ## Alt may be a single AA, a symbolic token (fs, del, dup, ins, *, =),
 ## or NA when the string carries no alt (e.g. "A298").
 .acmg_parse_aa_change <- function(aa_change) {
-  empty <- list(ref = NA_character_, pos = NA_integer_, alt = NA_character_)
-  if (is.null(aa_change) || length(aa_change) != 1L || is.na(aa_change)) {
-    return(empty)
-  }
-  s <- sub("^p\\.", "", as.character(aa_change))
-  m <- regmatches(s, regexec("^([A-Za-z\\*])([0-9]+)([A-Za-z\\*=]*)$", s))[[1]]
-  if (length(m) == 0L) {
-    ## Fall back to a bare position (e.g. "175").
-    mp <- regmatches(s, regexec("([0-9]+)", s))[[1]]
-    if (length(mp) >= 1L) {
-      return(list(ref = NA_character_,
-                  pos = as.integer(mp[1]),
-                  alt = NA_character_))
+    empty <- list(ref = NA_character_, pos = NA_integer_, alt = NA_character_)
+    if (is.null(aa_change) || length(aa_change) != 1L || is.na(aa_change)) {
+        return(empty)
     }
-    return(empty)
-  }
-  alt <- m[4]
-  list(ref = toupper(m[2]),
-       pos = as.integer(m[3]),
-       alt = if (nzchar(alt)) alt else NA_character_)
+    s <- sub("^p\\.", "", as.character(aa_change))
+    m <- regmatches(s, regexec("^([A-Za-z\\*])([0-9]+)([A-Za-z\\*=]*)$", s))[[1]]
+    if (length(m) == 0L) {
+        ## Fall back to a bare position (e.g. "175").
+        mp <- regmatches(s, regexec("([0-9]+)", s))[[1]]
+        if (length(mp) >= 1L) {
+            return(list(
+                ref = NA_character_,
+                pos = as.integer(mp[1]),
+                alt = NA_character_
+            ))
+        }
+        return(empty)
+    }
+    alt <- m[4]
+    list(
+        ref = toupper(m[2]),
+        pos = as.integer(m[3]),
+        alt = if (nzchar(alt)) alt else NA_character_
+    )
 }

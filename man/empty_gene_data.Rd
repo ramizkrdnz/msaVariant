@@ -26,7 +26,9 @@ but empty (zero rows, correct columns and types). Useful as a
 template when writing custom annotation files or as a fallback.
 }
 \examples{
-skeleton <- empty_gene_data("MYGENE", uniprot_id = "P00000",
-                            protein_length = 393L)
+skeleton <- empty_gene_data("MYGENE",
+    uniprot_id = "P00000",
+    protein_length = 393L
+)
 lapply(skeleton, names)
 }

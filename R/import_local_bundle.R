@@ -34,54 +34,58 @@
 #' ## Import the shipped synthetic DEMO1 bundle into a temporary cache.
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' fetch_gene_data("DEMO1")$meta
 #'
 #' @export
 import_local_bundle <- function(path, gene = NULL, overwrite = TRUE,
-                                 verify_checksum = TRUE) {
-  if (!file.exists(path)) {
-    stop("File not found: ", path)
-  }
-  bundle <- readRDS(path)
-  
-  ## Validate before importing — refuse non-spec files
-  v <- validate_gene_data(bundle, strict = FALSE)
-  if (!isTRUE(v$valid)) {
-    stop("Bundle failed validation:\n  ",
-         paste(v$issues, collapse = "\n  "))
-  }
-  
-  if (is.null(gene)) {
-    if (is.null(bundle$meta) || is.null(bundle$meta$gene)) {
-      stop("Cannot infer gene symbol from bundle$meta$gene; pass `gene=`.")
+                                verify_checksum = TRUE) {
+    if (!file.exists(path)) {
+        stop("File not found: ", path)
     }
-    gene <- as.character(bundle$meta$gene[1])
-  }
-  
-  cache_root <- file.path(cache_location(), bundle$meta$data_version %||% "0.1.0")
-  dir.create(cache_root, recursive = TRUE, showWarnings = FALSE)
-  dest <- file.path(cache_root, paste0(gene, ".rds"))
-  
-  if (file.exists(dest) && !overwrite) {
-    stop("Bundle already in cache: ", dest,
-         " (set overwrite = TRUE to replace)")
-  }
-  file.copy(path, dest, overwrite = TRUE)
+    bundle <- readRDS(path)
 
-  ## Optional integrity check against a local MANIFEST.tsv (if any).
-  if (isTRUE(verify_checksum) && !.verify_checksum(gene, dest)) {
-    rlang::warn(c(
-      sprintf("Imported %s bundle does not match its MANIFEST.tsv sha256.", gene),
-      "x" = "The file's checksum differs from the manifest entry.",
-      "i" = "The bundle was imported anyway; verify it is the intended build."
-    ))
-  }
+    ## Validate before importing — refuse non-spec files
+    v <- validate_gene_data(bundle, strict = FALSE)
+    if (!isTRUE(v$valid)) {
+        stop(
+            "Bundle failed validation:\n  ",
+            paste(v$issues, collapse = "\n  ")
+        )
+    }
 
-  message("Imported ", gene, " bundle -> ", dest)
-  invisible(dest)
+    if (is.null(gene)) {
+        if (is.null(bundle$meta) || is.null(bundle$meta$gene)) {
+            stop("Cannot infer gene symbol from bundle$meta$gene; pass `gene=`.")
+        }
+        gene <- as.character(bundle$meta$gene[1])
+    }
+
+    cache_root <- file.path(cache_location(), bundle$meta$data_version %||% "0.1.0")
+    dir.create(cache_root, recursive = TRUE, showWarnings = FALSE)
+    dest <- file.path(cache_root, paste0(gene, ".rds"))
+
+    if (file.exists(dest) && !overwrite) {
+        stop(
+            "Bundle already in cache: ", dest,
+            " (set overwrite = TRUE to replace)"
+        )
+    }
+    file.copy(path, dest, overwrite = TRUE)
+
+    ## Optional integrity check against a local MANIFEST.tsv (if any).
+    if (isTRUE(verify_checksum) && !.verify_checksum(gene, dest)) {
+        rlang::warn(c(
+            sprintf("Imported %s bundle does not match its MANIFEST.tsv sha256.", gene),
+            "x" = "The file's checksum differs from the manifest entry.",
+            "i" = "The bundle was imported anyway; verify it is the intended build."
+        ))
+    }
+
+    message("Imported ", gene, " bundle -> ", dest)
+    invisible(dest)
 }
 
 ## Internal infix fallback so the call above doesn't break on older R

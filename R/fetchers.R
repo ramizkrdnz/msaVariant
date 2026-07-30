@@ -10,14 +10,18 @@
 ## (so callers can fall back gracefully).
 
 .fetch_slice <- function(gene, table_name, force_refresh = FALSE) {
-  obj <- fetch_gene_data(gene, force_refresh = force_refresh)
-  if (is.null(obj)) return(NULL)
-  if (!table_name %in% names(obj)) {
-    rlang::warn(sprintf("'%s' table missing from %s gene data.",
-                        table_name, gene))
-    return(NULL)
-  }
-  obj[[table_name]]
+    obj <- fetch_gene_data(gene, force_refresh = force_refresh)
+    if (is.null(obj)) {
+        return(NULL)
+    }
+    if (!table_name %in% names(obj)) {
+        rlang::warn(sprintf(
+            "'%s' table missing from %s gene data.",
+            table_name, gene
+        ))
+        return(NULL)
+    }
+    obj[[table_name]]
 }
 
 #' Get InterPro/Pfam domains for a gene
@@ -33,13 +37,13 @@
 #' ## Runnable with the shipped synthetic DEMO1 bundle (no network).
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' get_domains("DEMO1")
 #' @export
 get_domains <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "domains", force_refresh)
+    .fetch_slice(gene, "domains", force_refresh)
 }
 
 #' Get ClinVar variants for a gene
@@ -56,13 +60,13 @@ get_domains <- function(gene, force_refresh = FALSE) {
 #' @examples
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' head(get_clinvar("DEMO1"))
 #' @export
 get_clinvar <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "clinvar", force_refresh)
+    .fetch_slice(gene, "clinvar", force_refresh)
 }
 
 #' Get gnomAD per-variant allele frequencies for a gene
@@ -78,13 +82,13 @@ get_clinvar <- function(gene, force_refresh = FALSE) {
 #' @examples
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' head(get_gnomad("DEMO1"))
 #' @export
 get_gnomad <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "gnomad", force_refresh)
+    .fetch_slice(gene, "gnomad", force_refresh)
 }
 
 #' Get AlphaMissense per-substitution scores for a gene
@@ -103,13 +107,13 @@ get_gnomad <- function(gene, force_refresh = FALSE) {
 #' @examples
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' head(get_alphamissense("DEMO1"))
 #' @export
 get_alphamissense <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "alphamissense", force_refresh)
+    .fetch_slice(gene, "alphamissense", force_refresh)
 }
 
 #' Get REVEL per-substitution scores for a gene
@@ -123,13 +127,13 @@ get_alphamissense <- function(gene, force_refresh = FALSE) {
 #' @examples
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' head(get_revel("DEMO1"))
 #' @export
 get_revel <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "revel", force_refresh)
+    .fetch_slice(gene, "revel", force_refresh)
 }
 
 #' Get CADD per-substitution PHRED scores for a gene
@@ -145,13 +149,13 @@ get_revel <- function(gene, force_refresh = FALSE) {
 #' @examples
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' head(get_cadd("DEMO1"))
 #' @export
 get_cadd <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "cadd", force_refresh)
+    .fetch_slice(gene, "cadd", force_refresh)
 }
 
 #' Get gene metadata
@@ -165,11 +169,11 @@ get_cadd <- function(gene, force_refresh = FALSE) {
 #' @examples
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
-#'   system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-#'   gene = "DEMO1"
+#'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+#'     gene = "DEMO1"
 #' )
 #' get_gene_meta("DEMO1")
 #' @export
 get_gene_meta <- function(gene, force_refresh = FALSE) {
-  .fetch_slice(gene, "meta", force_refresh)
+    .fetch_slice(gene, "meta", force_refresh)
 }

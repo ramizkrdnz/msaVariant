@@ -29,30 +29,30 @@
 #' head(cmap)
 #' @export
 build_msa_coord_map <- function(msa, ref_name = NULL) {
-  seqs <- .coerce_to_named_char(msa)
+    seqs <- .coerce_to_named_char(msa)
 
-  if (is.null(ref_name)) {
-    ref_name <- names(seqs)[1L]
-  }
-  if (!ref_name %in% names(seqs)) {
-    rlang::abort(sprintf(
-      "Reference '%s' not found in MSA. Available: %s",
-      ref_name, paste(names(seqs), collapse = ", ")
-    ))
-  }
-  ref_seq <- seqs[[ref_name]]
-  chars   <- strsplit(ref_seq, "", fixed = TRUE)[[1L]]
+    if (is.null(ref_name)) {
+        ref_name <- names(seqs)[1L]
+    }
+    if (!ref_name %in% names(seqs)) {
+        rlang::abort(sprintf(
+            "Reference '%s' not found in MSA. Available: %s",
+            ref_name, paste(names(seqs), collapse = ", ")
+        ))
+    }
+    ref_seq <- seqs[[ref_name]]
+    chars <- strsplit(ref_seq, "", fixed = TRUE)[[1L]]
 
-  is_gap  <- chars %in% c("-", ".", "*")
-  ungapped_pos <- cumsum(!is_gap)
-  ungapped_pos[is_gap] <- NA_integer_
+    is_gap <- chars %in% c("-", ".", "*")
+    ungapped_pos <- cumsum(!is_gap)
+    ungapped_pos[is_gap] <- NA_integer_
 
-  data.frame(
-    residue_pos = ungapped_pos,
-    aa          = chars,
-    msa_col     = seq_along(chars),
-    stringsAsFactors = FALSE
-  )
+    data.frame(
+        residue_pos = ungapped_pos,
+        aa = chars,
+        msa_col = seq_along(chars),
+        stringsAsFactors = FALSE
+    )
 }
 
 #' Map a vector of variant residue positions to MSA columns
@@ -69,48 +69,48 @@ build_msa_coord_map <- function(msa, ref_name = NULL) {
 #' map_variant_to_msa(c(21, 30), fa, ref_name = "DEMO1_HUMAN")
 #' @export
 map_variant_to_msa <- function(positions, msa, ref_name = NULL) {
-  m <- build_msa_coord_map(msa, ref_name)
-  # invert: residue_pos -> msa_col, drop NA residue rows (gap)
-  m <- m[!is.na(m$residue_pos), , drop = FALSE]
-  lookup <- stats::setNames(m$msa_col, as.character(m$residue_pos))
-  out <- unname(lookup[as.character(positions)])
+    m <- build_msa_coord_map(msa, ref_name)
+    # invert: residue_pos -> msa_col, drop NA residue rows (gap)
+    m <- m[!is.na(m$residue_pos), , drop = FALSE]
+    lookup <- stats::setNames(m$msa_col, as.character(m$residue_pos))
+    out <- unname(lookup[as.character(positions)])
 
-  n_miss <- sum(is.na(out) & !is.na(positions))
-  if (n_miss > 0L) {
-    rlang::warn(sprintf(
-      "%d position(s) could not be mapped to the reference MSA (out of range or gap).",
-      n_miss
-    ))
-  }
-  out
+    n_miss <- sum(is.na(out) & !is.na(positions))
+    if (n_miss > 0L) {
+        rlang::warn(sprintf(
+            "%d position(s) could not be mapped to the reference MSA (out of range or gap).",
+            n_miss
+        ))
+    }
+    out
 }
 
 # Internal helper: take whatever `msa` representation is supplied
 # and return a named character vector of equal-length sequences.
 .coerce_to_named_char <- function(msa) {
-  if (is.character(msa) && length(msa) == 1L && file.exists(msa)) {
-    # FASTA path
-    aa <- Biostrings::readAAStringSet(msa)
-    seqs <- as.character(aa)
-    if (is.null(names(seqs)) || any(names(seqs) == "")) {
-      names(seqs) <- paste0("seq", seq_along(seqs))
+    if (is.character(msa) && length(msa) == 1L && file.exists(msa)) {
+        # FASTA path
+        aa <- Biostrings::readAAStringSet(msa)
+        seqs <- as.character(aa)
+        if (is.null(names(seqs)) || any(names(seqs) == "")) {
+            names(seqs) <- paste0("seq", seq_along(seqs))
+        }
+        return(seqs)
     }
-    return(seqs)
-  }
-  if (inherits(msa, c("AAMultipleAlignment", "DNAMultipleAlignment"))) {
-    return(as.character(msa@unmasked))
-  }
-  if (inherits(msa, c("AAStringSet", "DNAStringSet", "BStringSet"))) {
-    return(as.character(msa))
-  }
-  if (is.character(msa)) {
-    if (is.null(names(msa)) || any(names(msa) == "")) {
-      names(msa) <- paste0("seq", seq_along(msa))
+    if (inherits(msa, c("AAMultipleAlignment", "DNAMultipleAlignment"))) {
+        return(as.character(msa@unmasked))
     }
-    return(msa)
-  }
-  rlang::abort(sprintf(
-    "Don't know how to extract sequences from object of class '%s'",
-    paste(class(msa), collapse = "/")
-  ))
+    if (inherits(msa, c("AAStringSet", "DNAStringSet", "BStringSet"))) {
+        return(as.character(msa))
+    }
+    if (is.character(msa)) {
+        if (is.null(names(msa)) || any(names(msa) == "")) {
+            names(msa) <- paste0("seq", seq_along(msa))
+        }
+        return(msa)
+    }
+    rlang::abort(sprintf(
+        "Don't know how to extract sequences from object of class '%s'",
+        paste(class(msa), collapse = "/")
+    ))
 }

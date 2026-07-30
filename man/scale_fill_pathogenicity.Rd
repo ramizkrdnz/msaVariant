@@ -20,6 +20,6 @@ pathogenic (red) to benign (blue), with grey for VUS.
 library(ggplot2)
 d <- data.frame(x = c("Pathogenic", "VUS", "Benign"), y = 1)
 ggplot(d, aes(x, y, fill = x)) +
-  geom_col() +
-  scale_fill_pathogenicity()
+    geom_col() +
+    scale_fill_pathogenicity()
 }

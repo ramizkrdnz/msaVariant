@@ -42,8 +42,8 @@ Copies the supplied `.rds` file into the package's cache directory
 ## Import the shipped synthetic DEMO1 bundle into a temporary cache.
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
-  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-  gene = "DEMO1"
+    system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+    gene = "DEMO1"
 )
 fetch_gene_data("DEMO1")$meta
 

@@ -48,8 +48,8 @@ through it transparently.
 ## A temporary cache keeps the example off your real cache directory.
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
-  system.file("extdata", "DEMO1.rds", package = "msaVariant"),
-  gene = "DEMO1"
+    system.file("extdata", "DEMO1.rds", package = "msaVariant"),
+    gene = "DEMO1"
 )
 b <- fetch_gene_data("DEMO1")
 names(b)

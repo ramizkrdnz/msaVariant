@@ -52,96 +52,103 @@
 #'
 #' ## Continuous track from your own per-residue values.
 #' my_af <- data.frame(pos = 1:40, af = runif(40, 0, 1e-3))
-#' layer <- geom_track(my_af, msa = fa, value = "af",
-#'                     name = "gnomAD AF", type = "continuous")
+#' layer <- geom_track(my_af,
+#'     msa = fa, value = "af",
+#'     name = "gnomAD AF", type = "continuous"
+#' )
 #'
 #' ## Discrete track from categorical calls.
 #' my_cv <- data.frame(pos = c(6, 21), sig = c("Benign", "Pathogenic"))
-#' layer <- geom_track(my_cv, msa = fa, value = "sig", type = "discrete",
-#'                     name = "ClinVar",
-#'                     palette = c(Benign = "#4575B4", Pathogenic = "#D7301F"))
+#' layer <- geom_track(my_cv,
+#'     msa = fa, value = "sig", type = "discrete",
+#'     name = "ClinVar",
+#'     palette = c(Benign = "#4575B4", Pathogenic = "#D7301F")
+#' )
 #' @export
 geom_track <- function(data,
                        msa,
-                       ref_name     = NULL,
+                       ref_name = NULL,
                        value,
-                       type         = c("continuous", "discrete"),
-                       name         = "",
-                       palette      = NULL,
-                       value_range  = NULL,
-                       y_offset     = -2,
+                       type = c("continuous", "discrete"),
+                       name = "",
+                       palette = NULL,
+                       value_range = NULL,
+                       y_offset = -2,
                        track_height = 1.2) {
-  type <- match.arg(type)
-  if (!is.data.frame(data)) {
-    rlang::abort("`data` must be a data.frame.")
-  }
-  if (!"pos" %in% names(data)) {
-    rlang::abort("`data` must contain a `pos` column.")
-  }
-  if (missing(value) || !value %in% names(data)) {
-    rlang::abort(sprintf("Column '%s' not found in `data`.", value))
-  }
-
-  # Map residue position to MSA column
-  data$msa_col <- map_variant_to_msa(data$pos, msa, ref_name)
-  data <- data[!is.na(data$msa_col), , drop = FALSE]
-  if (nrow(data) == 0L) {
-    rlang::warn("No track positions mapped to MSA columns.")
-    return(NULL)
-  }
-
-  y0 <- y_offset
-  y1 <- y_offset + track_height
-
-  vals <- data[[value]]
-
-  if (type == "continuous") {
-    if (!is.numeric(vals)) {
-      rlang::abort("Continuous track requires a numeric value column.")
+    type <- match.arg(type)
+    if (!is.data.frame(data)) {
+        rlang::abort("`data` must be a data.frame.")
     }
-    if (is.null(palette)) {
-      palette <- c("#2c7bb6","#abd9e9","#ffffbf","#fdae61","#d7191c")
+    if (!"pos" %in% names(data)) {
+        rlang::abort("`data` must contain a `pos` column.")
     }
-    if (is.null(value_range)) value_range <- range(vals, na.rm = TRUE)
-    if (diff(value_range) == 0) value_range <- value_range + c(-0.5, 0.5)
-    clipped <- pmin(pmax(vals, value_range[1]), value_range[2])
-    norm    <- (clipped - value_range[1]) /
-               (value_range[2] - value_range[1])
-    fills   <- grDevices::colorRampPalette(palette)(101)[
-                 pmax(1, pmin(101, round(norm * 100) + 1))]
-  } else {
-    # discrete
-    if (is.null(palette)) {
-      lv <- unique(as.character(vals))
-      palette <- setNames(
-        scales::hue_pal()(length(lv)),
-        lv
-      )
+    if (missing(value) || !value %in% names(data)) {
+        rlang::abort(sprintf("Column '%s' not found in `data`.", value))
     }
-    fills <- unname(palette[as.character(vals)])
-    fills[is.na(fills)] <- "#888888"
-  }
 
-  tiles <- ggplot2::geom_rect(
-    data = data.frame(
-      xmin = data$msa_col - 0.5,
-      xmax = data$msa_col + 0.5,
-      ymin = y0, ymax = y1,
-      stringsAsFactors = FALSE
-    ),
-    mapping = ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax,
-                           ymin = .data$ymin, ymax = .data$ymax),
-    inherit.aes = FALSE,
-    fill        = fills
-  )
+    # Map residue position to MSA column
+    data$msa_col <- map_variant_to_msa(data$pos, msa, ref_name)
+    data <- data[!is.na(data$msa_col), , drop = FALSE]
+    if (nrow(data) == 0L) {
+        rlang::warn("No track positions mapped to MSA columns.")
+        return(NULL)
+    }
 
-  label <- ggplot2::annotate(
-    "text",
-    x = max(data$msa_col) + 1.5,
-    y = (y0 + y1) / 2,
-    label = name,
-    hjust = 0, size = 3.2, fontface = "italic"
-  )
+    y0 <- y_offset
+    y1 <- y_offset + track_height
 
-  list(tiles, label)
+    vals <- data[[value]]
+
+    if (type == "continuous") {
+        if (!is.numeric(vals)) {
+            rlang::abort("Continuous track requires a numeric value column.")
+        }
+        if (is.null(palette)) {
+            palette <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+        }
+        if (is.null(value_range)) value_range <- range(vals, na.rm = TRUE)
+        if (diff(value_range) == 0) value_range <- value_range + c(-0.5, 0.5)
+        clipped <- pmin(pmax(vals, value_range[1]), value_range[2])
+        norm <- (clipped - value_range[1]) /
+            (value_range[2] - value_range[1])
+        fills <- grDevices::colorRampPalette(palette)(101)[
+            pmax(1, pmin(101, round(norm * 100) + 1))
+        ]
+    } else {
+        # discrete
+        if (is.null(palette)) {
+            lv <- unique(as.character(vals))
+            palette <- setNames(
+                scales::hue_pal()(length(lv)),
+                lv
+            )
+        }
+        fills <- unname(palette[as.character(vals)])
+        fills[is.na(fills)] <- "#888888"
+    }
+
+    tiles <- ggplot2::geom_rect(
+        data = data.frame(
+            xmin = data$msa_col - 0.5,
+            xmax = data$msa_col + 0.5,
+            ymin = y0, ymax = y1,
+            stringsAsFactors = FALSE
+        ),
+        mapping = ggplot2::aes(
+            xmin = .data$xmin, xmax = .data$xmax,
+            ymin = .data$ymin, ymax = .data$ymax
+        ),
+        inherit.aes = FALSE,
+        fill = fills
+    )
+
+    label <- ggplot2::annotate(
+        "text",
+        x = max(data$msa_col) + 1.5,
+        y = (y0 + y1) / 2,
+        label = name,
+        hjust = 0, size = 3.2, fontface = "italic"
+    )
+
+    list(tiles, label)
 }
