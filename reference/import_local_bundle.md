@@ -56,7 +56,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/Rtmp9JzdHU/msaVariant_cache_1a73616f5294/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_3000221c0a0a/0.1.0/DEMO1.rds
 fetch_gene_data("DEMO1")$meta
 #>    gene uniprot_id protein_length     ensembl_gene_id ensembl_transcript_id
 #> 1 DEMO1  DEMO00001             40 ENSGDEMO00000000001   ENSTDEMO00000000001

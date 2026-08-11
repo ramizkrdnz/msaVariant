@@ -32,7 +32,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/Rtmp9JzdHU/msaVariant_cache_1a732e6c1d18/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_3000b813e5f/0.1.0/DEMO1.rds
 head(get_revel("DEMO1"))
 #>   pos aa_ref aa_alt aa_change revel_score
 #> 1   1      M      A       M1A      0.8868

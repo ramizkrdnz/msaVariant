@@ -131,7 +131,7 @@ that has no Zenodo deposit.
 path <- system.file("extdata", "DEMO1.rds", package = "msaVariant")
 import_local_bundle(path, gene = "DEMO1")
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpFbu5zP/msaVariant_cache_1dc44cffd2cf/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpRiv3SR/msaVariant_cache_33507b119060/0.1.0/DEMO1.rds
 ```
 
 The file is validated, then copied into the cache
@@ -287,10 +287,10 @@ is a false PM2, and you should read the strip accordingly.
 ``` r
 
 cache_location()
-#> [1] "/tmp/RtmpFbu5zP/msaVariant_cache_1dc44cffd2cf"
+#> [1] "/tmp/RtmpRiv3SR/msaVariant_cache_33507b119060"
 cache_summary()
 #>    gene size_kb  cached_on
-#> 1 DEMO1     3.1 2026-07-30
+#> 1 DEMO1     3.1 2026-08-11
 ```
 
 ``` r
@@ -356,7 +356,7 @@ sessionInfo()
 #> [19] patchwork_1.3.2     labeling_0.4.3      generics_0.1.4     
 #> [22] knitr_1.51          BiocGenerics_0.58.1 htmlwidgets_1.6.4  
 #> [25] tibble_3.3.1        desc_1.4.3          pillar_1.11.1      
-#> [28] bslib_0.11.0        RColorBrewer_1.1-3  rlang_1.3.0        
+#> [28] bslib_0.12.0        RColorBrewer_1.1-3  rlang_1.3.0        
 #> [31] cachem_1.1.0        xfun_0.60           S7_0.2.2           
 #> [34] fs_2.1.0            sass_0.4.10         otel_0.2.0         
 #> [37] cli_3.6.6           withr_3.0.3         magrittr_2.0.5     

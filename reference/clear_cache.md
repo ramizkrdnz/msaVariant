@@ -29,7 +29,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/Rtmp9JzdHU/msaVariant_cache_1a7313c6c406/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_3000d78dab2/0.1.0/DEMO1.rds
 clear_cache("DEMO1") # remove one gene
 #> Cleared cached file for DEMO1.
 clear_cache() # remove everything

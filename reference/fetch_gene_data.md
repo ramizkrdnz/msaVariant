@@ -1,6 +1,6 @@
 # Fetch the combined annotation file for a gene
 
-Downloads (or reads from local cache) the per-gene annotation bundle
+Downloads (or reads from local cache) the annotation bundle for a gene
 from the Zenodo deposit. Returns the deserialized list as described in
 \`DATA_FORMAT_SPEC.md\`.
 
@@ -54,6 +54,17 @@ Most users will not call this directly; the \`get_domains()\`,
 \`get_clinvar()\`, etc. helpers and the \`geom\_\*()\` layers route
 through it transparently.
 
+The public interface is the same regardless of how the deposit is
+organised. When a gene-\>group index ships in the package
+(\`inst/extdata/gene_group_index.tsv\`), the deposit packs many gene
+bundles into a smaller number of "group" files; this function then
+downloads the whole group once, caches it, and extracts the one gene's
+bundle — so a second gene in the same group needs no further download.
+Set the env var \`MSAVARIANT_GROUPED\` to a false-y value to force the
+legacy one-file-per-gene mode. A bundle already present in the cache
+under \`\<gene\>.rds\` (e.g. from \[import_local_bundle()\]) always
+takes precedence over grouped fetching.
+
 ## Examples
 
 ``` r
@@ -65,7 +76,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/Rtmp9JzdHU/msaVariant_cache_1a73584ba281/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_3000822cd6c/0.1.0/DEMO1.rds
 b <- fetch_gene_data("DEMO1")
 names(b)
 #> [1] "meta"          "domains"       "clinvar"       "gnomad"       
