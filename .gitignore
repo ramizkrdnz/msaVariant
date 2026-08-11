@@ -72,3 +72,7 @@ data-raw/zenodo_sandbox_payload/
 # NOTE: intentionally NOT ignored (required):
 #   tests/testthat/fixtures/   -> *.rds test fixtures needed by the test suite
 #   data-raw/*.R               -> bundle build scripts (kept as source)
+
+# Prototype grouped-bundle payload: regenerable via data-raw/build_group_prototype.R;
+# group_01 duplicates the tracked TP53/WDR31 fixtures.
+data-raw/zenodo_grouped_payload/

@@ -31,7 +31,9 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
     sub("/+$", "", Sys.getenv("MSAVARIANT_ZENODO_HOST", "https://zenodo.org"))
 }
 
-.zenodo_url <- function(gene) {
+## `name` is the file basename to fetch (a gene in per-gene mode, or a
+## group in grouped mode); the deposit stores <name>.rds either way.
+.zenodo_url <- function(name) {
     if (MSAVARIANT_ZENODO_RECORD == "PENDING_RECORD_ID") {
         rlang::abort(c(
             "msaVariant data deposit URL has not been configured.",
@@ -44,8 +46,56 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
     ## path; the legacy /record/ singular still 301-redirects to it.
     sprintf(
         "%s/records/%s/files/%s.rds?download=1",
-        .zenodo_host(), MSAVARIANT_ZENODO_RECORD, gene
+        .zenodo_host(), MSAVARIANT_ZENODO_RECORD, name
     )
+}
+
+## Fetch a <name>.rds data file into `dest` (a group file in grouped
+## mode, a gene file in per-gene mode). Returns TRUE on success, FALSE
+## on failure. Source is the Zenodo deposit, unless MSAVARIANT_LOCAL_SOURCE
+## points at a directory holding <name>.rds files -- an offline override
+## used for air-gapped use and for testing the fetch path without network.
+.download_data_file <- function(name, dest, quiet = FALSE) {
+    tmp <- tempfile(fileext = ".rds")
+    on.exit(unlink(tmp), add = TRUE)
+
+    local_src <- Sys.getenv("MSAVARIANT_LOCAL_SOURCE", "")
+    if (nzchar(local_src)) {
+        src <- file.path(local_src, paste0(name, ".rds"))
+        if (!file.exists(src)) {
+            rlang::warn(sprintf(
+                "MSAVARIANT_LOCAL_SOURCE set but '%s' not found.", src
+            ))
+            return(FALSE)
+        }
+        if (!file.copy(src, tmp, overwrite = TRUE)) {
+            return(FALSE)
+        }
+    } else {
+        url <- .zenodo_url(name)
+        result <- tryCatch(
+            utils::download.file(url, destfile = tmp, mode = "wb", quiet = TRUE),
+            error = function(e) {
+                rlang::warn(c(
+                    sprintf("Could not download data file '%s'.", name),
+                    "x" = conditionMessage(e),
+                    "i" = "Check your internet connection."
+                ))
+                NULL
+            }
+        )
+        if (is.null(result) || !file.exists(tmp) || file.info(tmp)$size == 0L) {
+            return(FALSE)
+        }
+    }
+
+    if (!quiet) {
+        size_mb <- file.info(tmp)$size / 1024 / 1024
+        if (size_mb > 2) message(sprintf("  downloaded %.1f MB.", size_mb))
+    }
+    ok <- file.rename(tmp, dest)
+    if (!ok) file.copy(tmp, dest, overwrite = TRUE)
+    TRUE
 }
 
 ## ----- Cache location --------------------------------------------
@@ -73,13 +123,24 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
 
 #' Fetch the combined annotation file for a gene
 #'
-#' Downloads (or reads from local cache) the per-gene annotation
-#' bundle from the Zenodo deposit. Returns the deserialized list
-#' as described in `DATA_FORMAT_SPEC.md`.
+#' Downloads (or reads from local cache) the annotation bundle for a
+#' gene from the Zenodo deposit. Returns the deserialized list as
+#' described in `DATA_FORMAT_SPEC.md`.
 #'
 #' Most users will not call this directly; the `get_domains()`,
 #' `get_clinvar()`, etc. helpers and the `geom_*()` layers route
 #' through it transparently.
+#'
+#' The public interface is the same regardless of how the deposit is
+#' organised. When a gene->group index ships in the package
+#' (`inst/extdata/gene_group_index.tsv`), the deposit packs many gene
+#' bundles into a smaller number of "group" files; this function then
+#' downloads the whole group once, caches it, and extracts the one
+#' gene's bundle — so a second gene in the same group needs no further
+#' download. Set the env var `MSAVARIANT_GROUPED` to a false-y value to
+#' force the legacy one-file-per-gene mode. A bundle already present in
+#' the cache under `<gene>.rds` (e.g. from [import_local_bundle()])
+#' always takes precedence over grouped fetching.
 #'
 #' @param gene HGNC gene symbol (e.g. `"PATL1"`).
 #' @param force_refresh If `TRUE`, redownload even if cached.
@@ -127,6 +188,9 @@ fetch_gene_data <- function(gene,
 
     cache_file <- .cache_path(gene)
 
+    # A per-gene cache file takes precedence over grouped mode. This is
+    # what import_local_bundle() writes, so an explicitly-imported local
+    # bundle always wins and the legacy per-gene flow is preserved.
     if (!force_refresh && file.exists(cache_file)) {
         out <- .safe_read_rds(cache_file)
         if (!is.null(out) && validate) .validate_or_invalidate(out, cache_file)
@@ -136,50 +200,101 @@ fetch_gene_data <- function(gene,
         return(out)
     }
 
-    url <- .zenodo_url(gene)
+    # Grouped mode: if enabled and the gene is in the group index, fetch
+    # the whole group once and extract this gene's bundle from it.
+    group <- if (.grouped_enabled()) .gene_group(gene) else NA_character_
+    if (!is.na(group)) {
+        return(.fetch_grouped(
+            gene, group, force_refresh, validate, verify_checksum, quiet
+        ))
+    }
 
-    # Friendly progress message scaled to expected size. We don't
-    # know the actual size until the HEAD request lands, but for a
-    # generic message we just say "downloading".
+    # Fallback: legacy per-gene download (gene not in any group).
     if (!quiet) {
         message(sprintf("msaVariant: downloading annotation for %s ...", gene))
     }
-
-    tmp <- tempfile(fileext = ".rds")
-    on.exit(unlink(tmp), add = TRUE)
-
-    result <- tryCatch(
-        utils::download.file(url, destfile = tmp, mode = "wb", quiet = TRUE),
-        error = function(e) {
-            rlang::warn(c(
-                sprintf("Could not download annotation for %s.", gene),
-                "x" = conditionMessage(e),
-                "i" = "Check your internet connection.",
-                "i" = "If you have the data locally, pass it via the `data` argument of each geom."
-            ))
-            NULL
-        }
-    )
-    if (is.null(result) || !file.exists(tmp) || file.info(tmp)$size == 0L) {
+    if (!.download_data_file(gene, cache_file, quiet)) {
+        rlang::warn(c(
+            sprintf("Could not fetch annotation for %s.", gene),
+            "i" = "If you have the data locally, pass it via the `data` argument of each geom."
+        ))
         return(NULL)
     }
-
-    # Friendly size message after download
-    if (!quiet) {
-        size_mb <- file.info(tmp)$size / 1024 / 1024
-        if (size_mb > 2) {
-            message(sprintf("  downloaded %.1f MB.", size_mb))
-        }
-    }
-
-    # Move from temp to cache (atomic on same filesystem)
-    ok <- file.rename(tmp, cache_file)
-    if (!ok) file.copy(tmp, cache_file, overwrite = TRUE)
 
     out <- .safe_read_rds(cache_file)
     if (!is.null(out) && validate) .validate_or_invalidate(out, cache_file)
     if (!is.null(out) && verify_checksum) {
         out <- .checksum_or_invalidate(gene, cache_file, out)
+    }
+    out
+}
+
+# Grouped fetch: resolve the group file (download once, cache), then
+# extract the requested gene's bundle from the group's named list. A
+# second gene in the same group is served entirely from the cached group
+# file with no further download. Returns the 7-element bundle, or NULL.
+.fetch_grouped <- function(gene, group,
+                           force_refresh = FALSE,
+                           validate = TRUE,
+                           verify_checksum = TRUE,
+                           quiet = FALSE) {
+    group_file <- .group_cache_path(group)
+
+    # Drop a cached group that fails its manifest checksum, so it will be
+    # re-fetched below.
+    if (!force_refresh && file.exists(group_file) && verify_checksum) {
+        if (!.verify_checksum(group, group_file)) {
+            rlang::warn(c(
+                sprintf("Cached group %s failed checksum verification; removing.", group),
+                "x" = "sha256 does not match the local MANIFEST.tsv entry."
+            ))
+            unlink(group_file)
+        }
+    }
+
+    if (force_refresh || !file.exists(group_file)) {
+        if (!quiet) {
+            message(sprintf(
+                "msaVariant: downloading group %s (for %s) ...", group, gene
+            ))
+        }
+        if (!.download_data_file(group, group_file, quiet)) {
+            rlang::warn(sprintf("Could not fetch group '%s' for gene '%s'.", group, gene))
+            return(NULL)
+        }
+        if (verify_checksum && !.verify_checksum(group, group_file)) {
+            rlang::warn(c(
+                sprintf("Downloaded group %s failed checksum verification; removing.", group),
+                "x" = "sha256 does not match the local MANIFEST.tsv entry."
+            ))
+            unlink(group_file)
+            return(NULL)
+        }
+    }
+
+    group_list <- .safe_read_rds(group_file)
+    if (is.null(group_list)) {
+        return(NULL)
+    }
+    if (!is.list(group_list) || is.null(names(group_list)) ||
+        !gene %in% names(group_list)) {
+        rlang::warn(sprintf(
+            "Gene '%s' not found inside group '%s' (index/deposit mismatch).",
+            gene, group
+        ))
+        return(NULL)
+    }
+
+    out <- group_list[[gene]]
+    if (!is.null(out) && validate) {
+        res <- validate_gene_data(out)
+        if (!isTRUE(res$valid)) {
+            rlang::warn(c(
+                sprintf("Bundle for %s (from group %s) failed validation.", gene, group),
+                "x" = paste(res$issues, collapse = "; ")
+            ))
+            return(NULL)
+        }
     }
     out
 }

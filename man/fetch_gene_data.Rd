@@ -34,14 +34,25 @@ A named list with 7 elements (`meta`, `domains`,
   `NULL` with a warning on failure.
 }
 \description{
-Downloads (or reads from local cache) the per-gene annotation
-bundle from the Zenodo deposit. Returns the deserialized list
-as described in `DATA_FORMAT_SPEC.md`.
+Downloads (or reads from local cache) the annotation bundle for a
+gene from the Zenodo deposit. Returns the deserialized list as
+described in `DATA_FORMAT_SPEC.md`.
 }
 \details{
 Most users will not call this directly; the `get_domains()`,
 `get_clinvar()`, etc. helpers and the `geom_*()` layers route
 through it transparently.
+
+The public interface is the same regardless of how the deposit is
+organised. When a gene->group index ships in the package
+(`inst/extdata/gene_group_index.tsv`), the deposit packs many gene
+bundles into a smaller number of "group" files; this function then
+downloads the whole group once, caches it, and extracts the one
+gene's bundle — so a second gene in the same group needs no further
+download. Set the env var `MSAVARIANT_GROUPED` to a false-y value to
+force the legacy one-file-per-gene mode. A bundle already present in
+the cache under `<gene>.rds` (e.g. from [import_local_bundle()])
+always takes precedence over grouped fetching.
 }
 \examples{
 ## Runnable with the shipped synthetic DEMO1 bundle (no network).
