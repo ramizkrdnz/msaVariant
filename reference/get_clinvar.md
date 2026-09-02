@@ -35,7 +35,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_30001db40862/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpyIvtSz/msaVariant_cache_31d71633c547/0.1.0/DEMO1.rds
 head(get_clinvar("DEMO1"))
 #>   pos aa_ref aa_alt aa_change      significance review_status  clinvar_id
 #> 1   1      M      A       M1A Likely_pathogenic        2_star DEMO0000001

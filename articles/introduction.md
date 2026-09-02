@@ -178,8 +178,8 @@ sessionInfo()
 #> [37] cli_3.6.6           withr_3.0.3         magrittr_2.0.5     
 #> [40] pkgdown_2.2.1       digest_0.6.39       grid_4.6.1         
 #> [43] cowplot_1.2.0       lifecycle_1.0.5     vctrs_0.7.3        
-#> [46] S4Vectors_0.50.1    evaluate_1.0.5      glue_1.8.1         
+#> [46] S4Vectors_0.50.2    evaluate_1.0.5      glue_1.8.1         
 #> [49] farver_2.1.2        ragg_1.5.2          stats4_4.6.1       
-#> [52] rmarkdown_2.31      pkgconfig_2.0.3     tools_4.6.1        
+#> [52] rmarkdown_2.32      pkgconfig_2.0.3     tools_4.6.1        
 #> [55] htmltools_0.5.9
 ```

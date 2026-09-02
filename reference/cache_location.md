@@ -18,5 +18,5 @@ The cache directory path (character).
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 cache_location()
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> [1] "/tmp/RtmpzaTwsr/msaVariant_cache_30003be39d11"
+#> [1] "/tmp/RtmpyIvtSz/msaVariant_cache_31d7ea8fb8d"
 ```

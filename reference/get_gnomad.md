@@ -34,7 +34,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_3000fc90bdf/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpyIvtSz/msaVariant_cache_31d7d8f619e/0.1.0/DEMO1.rds
 head(get_gnomad("DEMO1"))
 #>   pos aa_ref aa_alt aa_change consequence  af_joint ac_joint an_joint filter
 #> 1   1      M      A       M1A    missense 0.0005818       12   152312   PASS

@@ -68,7 +68,7 @@ takes precedence over grouped fetching.
 ## Examples
 
 ``` r
-## Runnable with the shipped synthetic DEMO1 bundle (no network).
+## Runnable with the shipped synthetic DEMO1 bundle (offline).
 ## A temporary cache keeps the example off your real cache directory.
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(
@@ -76,7 +76,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_3000822cd6c/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpyIvtSz/msaVariant_cache_31d7845662c/0.1.0/DEMO1.rds
 b <- fetch_gene_data("DEMO1")
 names(b)
 #> [1] "meta"          "domains"       "clinvar"       "gnomad"       

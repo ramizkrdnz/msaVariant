@@ -32,7 +32,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_30005394da36/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpyIvtSz/msaVariant_cache_31d74e3fc698/0.1.0/DEMO1.rds
 get_gene_meta("DEMO1")
 #>    gene uniprot_id protein_length     ensembl_gene_id ensembl_transcript_id
 #> 1 DEMO1  DEMO00001             40 ENSGDEMO00000000001   ENSTDEMO00000000001

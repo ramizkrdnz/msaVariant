@@ -39,7 +39,7 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpzaTwsr/msaVariant_cache_30001b472a7a/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpyIvtSz/msaVariant_cache_31d76cf31fef/0.1.0/DEMO1.rds
 head(get_alphamissense("DEMO1"))
 #>   pos aa_ref aa_alt aa_change am_score          am_class
 #> 1   1      M      A       M1A   0.2457     likely_benign

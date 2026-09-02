@@ -203,7 +203,7 @@ Retrieve per-gene annotation bundles and manage the local cache.
 - [`fetch_gene_data()`](https://ramizkrdnz.github.io/msaVariant/reference/fetch_gene_data.md)
   : Fetch the combined annotation file for a gene
 - [`available_genes()`](https://ramizkrdnz.github.io/msaVariant/reference/available_genes.md)
-  : List genes available in the local data manifest
+  : List the genes for which annotation data is available
 - [`clear_cache()`](https://ramizkrdnz.github.io/msaVariant/reference/clear_cache.md)
   : Clear the msaVariant download cache
 - [`cache_location()`](https://ramizkrdnz.github.io/msaVariant/reference/cache_location.md)

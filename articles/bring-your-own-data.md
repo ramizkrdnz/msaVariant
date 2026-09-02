@@ -131,7 +131,7 @@ that has no Zenodo deposit.
 path <- system.file("extdata", "DEMO1.rds", package = "msaVariant")
 import_local_bundle(path, gene = "DEMO1")
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpRiv3SR/msaVariant_cache_33507b119060/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpDb9BOo/msaVariant_cache_3525899541d/0.1.0/DEMO1.rds
 ```
 
 The file is validated, then copied into the cache
@@ -287,10 +287,10 @@ is a false PM2, and you should read the strip accordingly.
 ``` r
 
 cache_location()
-#> [1] "/tmp/RtmpRiv3SR/msaVariant_cache_33507b119060"
+#> [1] "/tmp/RtmpDb9BOo/msaVariant_cache_3525899541d"
 cache_summary()
 #>    gene size_kb  cached_on
-#> 1 DEMO1     3.1 2026-08-11
+#> 1 DEMO1     3.1 2026-09-02
 ```
 
 ``` r
@@ -362,8 +362,8 @@ sessionInfo()
 #> [37] cli_3.6.6           withr_3.0.3         magrittr_2.0.5     
 #> [40] pkgdown_2.2.1       digest_0.6.39       grid_4.6.1         
 #> [43] cowplot_1.2.0       lifecycle_1.0.5     vctrs_0.7.3        
-#> [46] S4Vectors_0.50.1    evaluate_1.0.5      glue_1.8.1         
+#> [46] S4Vectors_0.50.2    evaluate_1.0.5      glue_1.8.1         
 #> [49] farver_2.1.2        ragg_1.5.2          stats4_4.6.1       
-#> [52] rmarkdown_2.31      pkgconfig_2.0.3     tools_4.6.1        
+#> [52] rmarkdown_2.32      pkgconfig_2.0.3     tools_4.6.1        
 #> [55] htmltools_0.5.9
 ```
