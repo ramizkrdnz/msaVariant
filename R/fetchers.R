@@ -34,7 +34,7 @@
 #'   `accession`, `source` (factor), and optionally `evidence`.
 #'   Returns `NULL` if download failed.
 #' @examples
-#' ## Runnable with the shipped synthetic DEMO1 bundle (no network).
+#' ## Runnable with the shipped synthetic DEMO1 bundle (offline).
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
 #'     system.file("extdata", "DEMO1.rds", package = "msaVariant"),

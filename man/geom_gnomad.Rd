@@ -32,7 +32,7 @@ For residues with multiple variants, the maximum joint allele
 frequency across variants is plotted.
 }
 \examples{
-## Build the layer from a data frame (no network, no ggmsa needed).
+## Build the layer from a data frame (offline, no ggmsa needed).
 demo <- readRDS(system.file("extdata", "DEMO1.rds", package = "msaVariant"))
 fa <- system.file("extdata", "demo_aligned.fasta", package = "msaVariant")
 layer <- geom_gnomad(data = demo$gnomad, msa = fa, ref_name = "DEMO1_HUMAN")

@@ -33,7 +33,11 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
 
 ## `name` is the file basename to fetch (a gene in per-gene mode, or a
 ## group in grouped mode); the deposit stores <name>.rds either way.
-.zenodo_url <- function(name) {
+.zenodo_url <- function(name) .zenodo_file_url(paste0(name, ".rds"))
+
+## URL for an arbitrary file in the deposit, by full filename (so both
+## <gene>.rds group/gene files and the MANIFEST.tsv can be addressed).
+.zenodo_file_url <- function(filename) {
     if (MSAVARIANT_ZENODO_RECORD == "PENDING_RECORD_ID") {
         rlang::abort(c(
             "msaVariant data deposit URL has not been configured.",
@@ -45,42 +49,48 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
     ## Modern Zenodo (InvenioRDM) serves files under the plural /records/
     ## path; the legacy /record/ singular still 301-redirects to it.
     sprintf(
-        "%s/records/%s/files/%s.rds?download=1",
-        .zenodo_host(), MSAVARIANT_ZENODO_RECORD, name
+        "%s/records/%s/files/%s?download=1",
+        .zenodo_host(), MSAVARIANT_ZENODO_RECORD, filename
     )
 }
 
-## Fetch a <name>.rds data file into `dest` (a group file in grouped
-## mode, a gene file in per-gene mode). Returns TRUE on success, FALSE
-## on failure. Source is the Zenodo deposit, unless MSAVARIANT_LOCAL_SOURCE
-## points at a directory holding <name>.rds files -- an offline override
-## used for air-gapped use and for testing the fetch path without network.
-.download_data_file <- function(name, dest, quiet = FALSE) {
-    tmp <- tempfile(fileext = ".rds")
+## Fetch a deposit file (by full filename, e.g. "group_01.rds" or
+## "MANIFEST.tsv") into `dest`. Returns TRUE on success, FALSE on
+## failure. Source is the Zenodo deposit, unless MSAVARIANT_LOCAL_SOURCE
+## points at a directory holding the files -- an offline override used
+## for air-gapped use and for testing the fetch path offline.
+## `warn = FALSE` silences the failure warnings for best-effort callers
+## (e.g. the optional manifest fetch), so a missing file degrades quietly.
+.download_file <- function(filename, dest, quiet = FALSE, warn = TRUE) {
+    tmp <- tempfile()
     on.exit(unlink(tmp), add = TRUE)
 
     local_src <- Sys.getenv("MSAVARIANT_LOCAL_SOURCE", "")
     if (nzchar(local_src)) {
-        src <- file.path(local_src, paste0(name, ".rds"))
+        src <- file.path(local_src, filename)
         if (!file.exists(src)) {
-            rlang::warn(sprintf(
-                "MSAVARIANT_LOCAL_SOURCE set but '%s' not found.", src
-            ))
+            if (warn) {
+                rlang::warn(sprintf(
+                    "MSAVARIANT_LOCAL_SOURCE set but '%s' not found.", src
+                ))
+            }
             return(FALSE)
         }
         if (!file.copy(src, tmp, overwrite = TRUE)) {
             return(FALSE)
         }
     } else {
-        url <- .zenodo_url(name)
+        url <- .zenodo_file_url(filename)
         result <- tryCatch(
             utils::download.file(url, destfile = tmp, mode = "wb", quiet = TRUE),
             error = function(e) {
-                rlang::warn(c(
-                    sprintf("Could not download data file '%s'.", name),
-                    "x" = conditionMessage(e),
-                    "i" = "Check your internet connection."
-                ))
+                if (warn) {
+                    rlang::warn(c(
+                        sprintf("Could not download data file '%s'.", filename),
+                        "x" = conditionMessage(e),
+                        "i" = "Check your internet connection."
+                    ))
+                }
                 NULL
             }
         )
@@ -96,6 +106,35 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
     ok <- file.rename(tmp, dest)
     if (!ok) file.copy(tmp, dest, overwrite = TRUE)
     TRUE
+}
+
+## Convenience wrapper: fetch a <name>.rds data file (gene or group).
+.download_data_file <- function(name, dest, quiet = FALSE) {
+    .download_file(paste0(name, ".rds"), dest, quiet)
+}
+
+## Ensure a local MANIFEST.tsv is present so checksum verification and
+## available_genes() engage in the pure-Zenodo path. Best-effort: it
+## downloads MANIFEST.tsv from the deposit once into the cache. Any
+## failure (offline, deposit not configured, no manifest in deposit) is
+## non-fatal -- verification simply stays dormant as it did before, so
+## behaviour degrades gracefully rather than erroring. Returns TRUE iff a
+## manifest is present afterwards. The manifest lives in the versioned
+## cache subdir, so a data-version bump naturally re-fetches it.
+.ensure_manifest <- function(quiet = FALSE, force = FALSE) {
+    mp <- .manifest_path()
+    if (!force && file.exists(mp)) {
+        return(invisible(TRUE))
+    }
+    dir.create(dirname(mp), recursive = TRUE, showWarnings = FALSE)
+    # Best-effort and silent (warn = FALSE): a deposit without a manifest,
+    # or an offline session, must not spam a warning on every fetch.
+    # Verification simply stays dormant, as before manifests were fetched.
+    ok <- tryCatch(
+        .download_file("MANIFEST.tsv", mp, quiet = TRUE, warn = FALSE),
+        error = function(e) FALSE
+    )
+    invisible(isTRUE(ok) && file.exists(mp))
 }
 
 ## ----- Cache location --------------------------------------------
@@ -156,7 +195,7 @@ MSAVARIANT_DATA_DOI <- "PENDING_DOI"
 #'   `clinvar`, `gnomad`, `alphamissense`, `revel`, `cadd`), or
 #'   `NULL` with a warning on failure.
 #' @examples
-#' ## Runnable with the shipped synthetic DEMO1 bundle (no network).
+#' ## Runnable with the shipped synthetic DEMO1 bundle (offline).
 #' ## A temporary cache keeps the example off your real cache directory.
 #' Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 #' import_local_bundle(
@@ -220,6 +259,8 @@ fetch_gene_data <- function(gene,
         ))
         return(NULL)
     }
+    # Pull the manifest once so the checksum check below can engage.
+    if (verify_checksum) .ensure_manifest(quiet, force = force_refresh)
 
     out <- .safe_read_rds(cache_file)
     if (!is.null(out) && validate) .validate_or_invalidate(out, cache_file)
@@ -262,6 +303,8 @@ fetch_gene_data <- function(gene,
             rlang::warn(sprintf("Could not fetch group '%s' for gene '%s'.", group, gene))
             return(NULL)
         }
+        # Pull the manifest once so the group can be checksum-verified.
+        if (verify_checksum) .ensure_manifest(quiet, force = force_refresh)
         if (verify_checksum && !.verify_checksum(group, group_file)) {
             rlang::warn(c(
                 sprintf("Downloaded group %s failed checksum verification; removing.", group),

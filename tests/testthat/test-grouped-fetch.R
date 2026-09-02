@@ -19,6 +19,19 @@
     )
     idxfile <- file.path(stage, "gene_group_index.tsv")
     write.table(idx, idxfile, sep = "\t", row.names = FALSE, quote = FALSE)
+    # A MANIFEST.tsv over the group file, so the fetcher's manifest
+    # auto-download (served from the staging dir) has something to fetch.
+    grp <- file.path(stage, "group_01.rds")
+    write.table(
+        data.frame(
+            file = "group_01.rds",
+            size = file.info(grp)$size,
+            sha256 = .sha256_file(grp),
+            stringsAsFactors = FALSE
+        ),
+        file.path(stage, "MANIFEST.tsv"),
+        sep = "\t", row.names = FALSE, quote = FALSE
+    )
     withr::local_envvar(
         MSAVARIANT_CACHE = cache,
         MSAVARIANT_LOCAL_SOURCE = stage,
@@ -117,4 +130,45 @@ test_that("a corrupt cached group is rejected by checksum verification", {
     w <- capture_warnings(out <- fetch_gene_data("TP53", quiet = TRUE))
     expect_true(any(grepl("checksum", w)))
     expect_null(out)
+})
+
+test_that("fetch auto-downloads MANIFEST.tsv into the cache once", {
+    s <- .setup_grouped() # staging dir includes a MANIFEST.tsv
+    man_cache <- file.path(s$cache, "0.1.0", "MANIFEST.tsv")
+    expect_false(file.exists(man_cache)) # not there before any fetch
+
+    b <- fetch_gene_data("TP53", quiet = TRUE)
+    expect_equal(b$meta$gene, "TP53")
+    # The manifest was pulled automatically alongside the group file.
+    expect_true(file.exists(man_cache))
+    man <- utils::read.delim(man_cache, sep = "\t", stringsAsFactors = FALSE)
+    expect_true("group_01.rds" %in% man$file)
+})
+
+test_that("checksum verification engages automatically via auto-download", {
+    # No manifest is placed manually: the fetcher must pull it itself and
+    # then reject a corrupt cached group on the next call.
+    s <- .setup_grouped()
+    expect_equal(fetch_gene_data("TP53", quiet = TRUE)$meta$gene, "TP53")
+    verdir <- file.path(s$cache, "0.1.0")
+    expect_true(file.exists(file.path(verdir, "MANIFEST.tsv"))) # auto-pulled
+
+    # Corrupt the cached group; remove the source so it can't be repaired.
+    writeBin(as.raw(rep(0L, 200)), file.path(verdir, "group_01.rds"))
+    file.remove(file.path(s$stage, "group_01.rds"))
+    w <- capture_warnings(out <- fetch_gene_data("TP53", quiet = TRUE))
+    expect_true(any(grepl("checksum", w)))
+    expect_null(out)
+})
+
+test_that("missing manifest degrades gracefully (fetch still succeeds)", {
+    # Remove the staged manifest: auto-download finds nothing, so
+    # verification stays dormant and the fetch still returns the bundle.
+    s <- .setup_grouped()
+    file.remove(file.path(s$stage, "MANIFEST.tsv"))
+    b <- fetch_gene_data("TP53", quiet = TRUE)
+    expect_equal(b$meta$gene, "TP53")
+    expect_true(validate_gene_data(b)$valid)
+    # No manifest landed in the cache; behaviour is as before.
+    expect_false(file.exists(file.path(s$cache, "0.1.0", "MANIFEST.tsv")))
 })

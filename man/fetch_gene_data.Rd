@@ -55,7 +55,7 @@ the cache under `<gene>.rds` (e.g. from [import_local_bundle()])
 always takes precedence over grouped fetching.
 }
 \examples{
-## Runnable with the shipped synthetic DEMO1 bundle (no network).
+## Runnable with the shipped synthetic DEMO1 bundle (offline).
 ## A temporary cache keeps the example off your real cache directory.
 Sys.setenv(MSAVARIANT_CACHE = tempfile("msaVariant_cache_"))
 import_local_bundle(

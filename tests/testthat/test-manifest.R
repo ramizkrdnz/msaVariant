@@ -35,6 +35,9 @@
 }
 
 test_that("available_genes() lists the genes in the manifest (TP53, WDR31)", {
+    # Legacy per-gene layout: grouped mode off, so the source of truth is
+    # the local MANIFEST.tsv rather than the shipped gene->group index.
+    withr::local_envvar(MSAVARIANT_GROUPED = "0")
     old <- Sys.getenv("MSAVARIANT_CACHE")
     on.exit(Sys.setenv(MSAVARIANT_CACHE = old))
     .setup_cache_with_manifest("correct")
@@ -45,10 +48,37 @@ test_that("available_genes() lists the genes in the manifest (TP53, WDR31)", {
 })
 
 test_that("available_genes() returns empty vector when no manifest present", {
+    # Legacy layout, no manifest, no index -> empty.
+    withr::local_envvar(
+        MSAVARIANT_GROUPED = "0",
+        MSAVARIANT_GROUP_INDEX = tempfile() # points at a non-existent index
+    )
     old <- Sys.getenv("MSAVARIANT_CACHE")
     on.exit(Sys.setenv(MSAVARIANT_CACHE = old))
     Sys.setenv(MSAVARIANT_CACHE = tempfile()) # empty, no manifest
     expect_identical(available_genes(), character(0))
+})
+
+test_that("available_genes() reads the gene->group index in grouped mode", {
+    # Grouped mode (default): the shipped index is the source of truth,
+    # available with no network and no cache. Use a staged index so the
+    # assertion is independent of the shipped file's exact contents.
+    idx <- tempfile(fileext = ".tsv")
+    write.table(
+        data.frame(
+            gene = c("TP53", "WDR31", "DEMO1"),
+            group = c("group_01", "group_01", "group_02"),
+            stringsAsFactors = FALSE
+        ),
+        idx,
+        sep = "\t", row.names = FALSE, quote = FALSE
+    )
+    withr::local_envvar(
+        MSAVARIANT_GROUPED = "1",
+        MSAVARIANT_GROUP_INDEX = idx,
+        MSAVARIANT_CACHE = tempfile() # empty cache, no manifest needed
+    )
+    expect_setequal(available_genes(), c("TP53", "WDR31", "DEMO1"))
 })
 
 test_that("checksum verification passes for a correct bundle", {
