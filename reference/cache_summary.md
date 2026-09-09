@@ -25,8 +25,8 @@ import_local_bundle(
     gene = "DEMO1"
 )
 #> Cache directory does not exist yet (no annotations have been downloaded).
-#> Imported DEMO1 bundle -> /tmp/RtmpyIvtSz/msaVariant_cache_31d738ca077a/0.1.0/DEMO1.rds
+#> Imported DEMO1 bundle -> /tmp/RtmpDVOLjU/msaVariant_cache_2ed51191c667/0.1.0/DEMO1.rds
 cache_summary()
 #>    gene size_kb  cached_on
-#> 1 DEMO1     3.1 2026-09-02
+#> 1 DEMO1     3.1 2026-09-09
 ```
