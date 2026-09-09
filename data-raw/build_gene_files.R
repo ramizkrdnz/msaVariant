@@ -108,7 +108,7 @@ merge_into_gene_bundles(
 
 # 9. Manifest + licenses
 message("\nStep 9/9: manifest, licenses, README ...")
-build_manifest(out_dir = OUT_DIR)
+build_manifest(payload_dir = OUT_DIR)
 
 t1 <- Sys.time()
 message("\n=== Build complete ===")

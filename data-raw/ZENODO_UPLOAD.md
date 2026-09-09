@@ -243,7 +243,11 @@ preserved.
 
 - **gnomAD API returns 429 (rate limited)**: increase
   `sleep_per_query` in `build_gnomad()` and rerun. The function
-  is incremental — already-saved genes are skipped.
+  is incremental — each gene's result is checkpointed to
+  `build_tmp/gnomad_cache/<gene>.rds` on a definitive (HTTP 200)
+  response, so a rerun skips already-fetched genes and only retries
+  the ones that failed transiently. To force a re-fetch of a gene,
+  delete its cache file.
 
 - **AlphaMissense MD5 mismatch**: the file was corrupted in
   transit. Delete `build_tmp/AlphaMissense_aa_substitutions.tsv.gz`

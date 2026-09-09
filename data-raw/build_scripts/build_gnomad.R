@@ -57,29 +57,95 @@ build_gnomad <- function(uniprot_ref,
     } }'
 
   genes <- unique(uniprot_ref$gene)
+
+  # ---- Per-gene checkpoint cache (makes the crawl resumable) --------
+  # Each gene's parsed result is written to <tmp_dir>/gnomad_cache/<gene>.rds
+  # as soon as the API returns a definitive 200 (even a 0-row result, so
+  # empties are not re-queried). A re-run reads the cache and skips those
+  # genes' API calls entirely -- so a crawl that dies at gene 12,000
+  # resumes from ~12,000, not from zero. Network failures are NOT cached,
+  # so those genes are retried on the next run.
+  cache_dir <- file.path(tmp_dir, "gnomad_cache")
+  dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
+  save_atomic <- function(obj, dest) {
+    tmp <- tempfile(tmpdir = dirname(dest), fileext = ".part")
+    saveRDS(obj, tmp)
+    if (!file.rename(tmp, dest)) {
+      file.copy(tmp, dest, overwrite = TRUE)
+      unlink(tmp)
+    }
+  }
+
   out <- list()
+  n_cached <- 0L
+  n_fetched <- 0L
   for (i in seq_along(genes)) {
     g <- genes[i]
     if (i %% 200L == 0L)
-      message(sprintf("  %d / %d (%s)", i, length(genes), g))
+      message(sprintf("  %d / %d (%s) [fetched %d, from cache %d]",
+                      i, length(genes), g, n_fetched, n_cached))
 
-    body <- jsonlite::toJSON(
-      list(query = sprintf(query_template, g)),
-      auto_unbox = TRUE)
-    resp <- tryCatch(
-      httr::POST(api, body = body, encode = "raw",
-                 httr::content_type_json(),
-                 httr::timeout(60)),
-      error = function(e) NULL)
-    if (is.null(resp) || httr::status_code(resp) != 200L) {
-      Sys.sleep(sleep_per_query); next
+    cache_file <- file.path(cache_dir, paste0(g, ".rds"))
+    if (file.exists(cache_file)) {
+      # Already fetched on a previous run (df may be 0-row for "no data").
+      cached <- tryCatch(readRDS(cache_file), error = function(e) NULL)
+      if (is.data.frame(cached) && nrow(cached) > 0L) out[[g]] <- cached
+      n_cached <- n_cached + 1L
+      next
     }
-    payload <- httr::content(resp, as = "parsed",
-                              simplifyVector = TRUE)
-    vs <- payload$data$gene$variants
-    if (is.null(vs) || nrow(vs) == 0L) {
-      Sys.sleep(sleep_per_query); next
+
+    # Per-gene tryCatch: a parse/HTTP error on one gene must not halt the
+    # whole crawl. The gene's df (parsed below) is assigned via `<<-`.
+    df <- NULL
+    ok <- tryCatch({
+      body <- jsonlite::toJSON(
+        list(query = sprintf(query_template, g)),
+        auto_unbox = TRUE)
+      resp <- httr::POST(api, body = body, encode = "raw",
+                         httr::content_type_json(),
+                         httr::timeout(60))
+      if (httr::status_code(resp) != 200L) {
+        # Not a definitive answer (rate-limited/5xx): do NOT cache; retry
+        # on the next run.
+        FALSE
+      } else {
+        payload <- httr::content(resp, as = "parsed", simplifyVector = TRUE)
+        vs <- payload$data$gene$variants
+        df <<- .gnomad_parse_variants(vs, three_to_one, cons_levels)
+        TRUE
+      }
+    }, error = function(e) {
+      warning(sprintf("gnomAD query failed for %s: %s",
+                      g, conditionMessage(e)))
+      FALSE   # transient -> not cached -> retried next run
+    })
+
+    if (isTRUE(ok)) {
+      # Cache the definitive result (even 0-row) so it is never re-queried.
+      save_atomic(df, cache_file)
+      n_fetched <- n_fetched + 1L
+      if (is.data.frame(df) && nrow(df) > 0L) out[[g]] <- df
     }
+    Sys.sleep(sleep_per_query)
+  }
+  message(sprintf("  Got data for %d genes (%d fetched this run, %d from cache)",
+                  length(out), n_fetched, n_cached))
+  out
+}
+
+# Parse a gnomAD GraphQL `variants` table into the per-gene schema.
+# Returns a data.frame (0 rows when `vs` is empty/NULL), never errors on
+# an empty result -- so a definitive "no variants" answer is cacheable.
+.gnomad_parse_variants <- function(vs, three_to_one, cons_levels) {
+    empty <- data.frame(
+      pos = integer(), aa_ref = character(), aa_alt = character(),
+      aa_change = character(),
+      consequence = factor(character(), levels = cons_levels),
+      af_exome = numeric(), af_genome = numeric(), af_joint = numeric(),
+      ac_joint = integer(), an_joint = integer(), filter = character(),
+      stringsAsFactors = FALSE
+    )
+    if (is.null(vs) || !is.data.frame(vs) || nrow(vs) == 0L) return(empty)
 
     # Parse HGVSp
     rx <- "^p\\.([A-Z][a-z]{2})(\\d+)([A-Z][a-z]{2}|=|Ter|fs|del|dup|ins.*?)$"
@@ -136,9 +202,6 @@ build_gnomad <- function(uniprot_ref,
       stringsAsFactors = FALSE
     )
     df <- df[!is.na(df$pos) & !is.na(df$aa_change), ]
-    if (nrow(df) > 0L) out[[g]] <- df
-    Sys.sleep(sleep_per_query)
-  }
-  message(sprintf("  Got data for %d genes", length(out)))
-  out
+    rownames(df) <- NULL
+    df
 }

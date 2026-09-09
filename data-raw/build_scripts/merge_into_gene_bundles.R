@@ -78,15 +78,33 @@ merge_into_gene_bundles <- function(out_dir,
     build_date, build_date)
 
   n_written <- 0L
-  n_failed  <- 0L
+  n_skipped <- 0L    # already present from a previous run (resume)
+  n_failed  <- 0L    # validation failure or a hard error in the gene body
   failed_genes <- character()
 
-  for (i in seq_len(nrow(uniprot_ref))) {
+  # Atomic write: saveRDS to a temp file in the same dir, then rename, so
+  # a crash mid-write never leaves a truncated <gene>.rds that the resume
+  # skip-guard would mistake for a completed gene.
+  save_atomic <- function(obj, dest) {
+    tmp <- tempfile(tmpdir = dirname(dest), fileext = ".rds.part")
+    saveRDS(obj, tmp, compress = "xz")
+    if (!file.rename(tmp, dest)) {
+      file.copy(tmp, dest, overwrite = TRUE)
+      unlink(tmp)
+    }
+  }
+
+  # Build (and write) one gene's bundle. Returns "written", "skipped",
+  # or "failed". Any error inside is caught by the caller's tryCatch.
+  build_one <- function(i) {
     row <- uniprot_ref[i, ]
     gene <- row$gene
-    if (i %% 500L == 0L)
-      message(sprintf("    [%d / %d] %s",
-                      i, nrow(uniprot_ref), gene))
+    dest <- file.path(out_dir, paste0(gene, ".rds"))
+
+    # Resume: a completed gene from a prior run is left untouched.
+    if (file.exists(dest)) {
+      return("skipped")
+    }
 
     meta <- data.frame(
       gene                  = gene,
@@ -119,22 +137,48 @@ merge_into_gene_bundles <- function(out_dir,
 
     v <- validate_gene_data(bundle, strict = FALSE)
     if (!v$valid) {
-      n_failed <- n_failed + 1L
-      failed_genes <- c(failed_genes, gene)
       warning(sprintf("Validation failed for %s; skipping.\n  %s",
                       gene, paste(v$issues, collapse = "\n  ")))
-      next
+      return("failed")
     }
 
-    saveRDS(bundle, file.path(out_dir, paste0(gene, ".rds")),
-            compress = "xz")
-    n_written <- n_written + 1L
+    save_atomic(bundle, dest)
+    "written"
   }
 
-  message(sprintf("\n  Wrote %d gene files; %d failed validation",
-                  n_written, n_failed))
+  for (i in seq_len(nrow(uniprot_ref))) {
+    gene <- uniprot_ref$gene[i]
+    if (i %% 500L == 0L)
+      message(sprintf("    [%d / %d] %s", i, nrow(uniprot_ref), gene))
+
+    # Per-gene tryCatch: a hard error (bad parse, I/O, etc.) on ONE gene
+    # is logged and skipped, never halting a multi-hour whole-genome run.
+    status <- tryCatch(
+      build_one(i),
+      error = function(e) {
+        warning(sprintf("Error building %s; skipping. %s",
+                        gene, conditionMessage(e)))
+        "failed"
+      }
+    )
+
+    if (status == "written") {
+      n_written <- n_written + 1L
+    } else if (status == "skipped") {
+      n_skipped <- n_skipped + 1L
+    } else {
+      n_failed <- n_failed + 1L
+      failed_genes <- c(failed_genes, gene)
+    }
+  }
+
+  message(sprintf(
+    "\n  Wrote %d gene files; %d skipped (already present); %d failed",
+    n_written, n_skipped, n_failed))
   if (n_failed > 0L) {
     writeLines(failed_genes, file.path(out_dir, "failed_genes.txt"))
     message("  Failed gene list: ", file.path(out_dir, "failed_genes.txt"))
   }
+  invisible(list(written = n_written, skipped = n_skipped,
+                 failed = n_failed, failed_genes = failed_genes))
 }
